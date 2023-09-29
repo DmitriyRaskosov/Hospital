@@ -1,8 +1,17 @@
 $(document).ready(function () {
-    var app_id = location.pathname.split('/')[2];
+    var app_id;
+    var url = document.URL;
+    var id_check = /[?&]id=([^&]+)/i;
+    var match = id_check.exec(url);
+    if (match != null) {
+        app_id = match[1];
+    } else {
+        app_id = "";
+    }
     console.log(app_id);
     $.ajax({
-        url: "api/spec_appointment.json?id="+app_id,
+        method: "GET",
+        url: "api/appointment.php?id="+app_id,
         context: document.body
     }).success(function(data) {
         console.log(data);
@@ -25,6 +34,7 @@ $(document).ready(function () {
         $('div#appointment_detail').html(big_tag);
         $('.delete_appointment').click(function(){
             $.ajax({
+                method: "POST",
                 url: "api/update_appointment.php?id="+app_id,
                 context: document.body
             }).success(function(data) {
@@ -34,6 +44,7 @@ $(document).ready(function () {
         });
         $('.delete_appointment').click(function(){
             $.ajax({
+                method: "DELETE",
                 url: "api/delete_appointment.php?id="+app_id,
                 context: document.body
             }).success(function(data) {
