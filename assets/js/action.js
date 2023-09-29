@@ -9,10 +9,10 @@ $(document).ready(function () {
     });
 
     function render_appointments(app) {
-        var short_tag = '<li><a href="detail.html?id='+app.id+'">'+app.doctor_type+' '+app.appointment_date+'</a></li>';
+        let short_tag = '<li><a href="detail.html?id='+app.id+'">'+app.doctor_type+' '+app.appointment_date+'</a></li>';
         $('ul#appointments_short').append(short_tag);
 
-        var big_tag = '<section class="6u 12u(narrower)">' +
+        let big_tag = '<section class="6u 12u(narrower)">' +
             '<div class="box post">' +
             '<a href="detail.html?id='+app.id+'" class="image left"><img src="images/pic01.jpg" alt="" /></a>' +
             '<div class="inner">' +
@@ -23,4 +23,23 @@ $(document).ready(function () {
             '</section>'
         $('div#appointments_big').append(big_tag);
     }
+
+    $('.create_appointment').click(function(event){
+        event.preventDefault();
+        var patient_name = document.getElementById('patient_name').value;
+        let appointment_date = document.getElementById('appointment_date').value;
+        let doctor_type = document.getElementById('doctor_type').value;
+        let body = {'name': patient_name, "date": appointment_date, "doctor_type": doctor_type};
+        console.log(body);
+        $.ajax({
+            method: "POST",
+            url: "api/create_appointment.php",
+            data: body,
+        }).always(function() {
+            alert('Новый талон добавлен!');
+            setTimeout(function(){
+                location.reload();
+            }, 3000);
+        })
+    });
 });

@@ -26,31 +26,38 @@ $(document).ready(function () {
             '<h2>Пациент: '+app.patient_name+'</h2>' +
             '<h3>Врач: '+app.doctor_type+'</h3>' +
             '<p>Запись на '+app.appointment_date+'</p>' +
-            '<button class="button update_appointment">Перенести запись</button>' +
-            '<button class="button delete_appointment">Отменить запись</button>' +
             '</div>' +
             '</div>' +
             '</section>'
         $('div#appointment_detail').html(big_tag);
-        $('.delete_appointment').click(function(){
-            $.ajax({
-                method: "POST",
-                url: "api/update_appointment.php?id="+app_id,
-                context: document.body
-            }).success(function(data) {
-                console.log(data);
-                render_appointment(data);
-            });
-        });
-        $('.delete_appointment').click(function(){
-            $.ajax({
-                method: "DELETE",
-                url: "api/delete_appointment.php?id="+app_id,
-                context: document.body
-            }).success(function(data) {
-                console.log(data);
-                location.replace("index.html");
-            });
-        });
     }
+
+    $('.update_appointment').click(function(){
+        var new_date = document.getElementById('appointment_date').value;
+        var body = {'date': new_date};
+        console.log(body);
+        $.ajax({
+            method: "POST",
+            url: "api/update_appointment.php?id="+app_id,
+            data: body,
+            context: document.body
+        }).success(function(data) {
+            console.log(data);
+            alert('Запись обновлена');
+            render_appointment(data);
+        });
+    });
+
+    $('.delete_appointment').click(function(){
+        $.ajax({
+            method: "DELETE",
+            url: "api/delete_appointment.php?id="+app_id,
+            context: document.body
+        }).success(function(data) {
+            alert('Запись отменена');
+            setTimeout(function(){
+                location.replace("index.html");
+            }, 3000);
+        });
+    });
 });
