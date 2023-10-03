@@ -20,8 +20,9 @@ $appointments = (array)json_decode($appointments, true);
 foreach ($appointments as $key => $value) {
 	if ($upd_id == $value['id']) {
 		$appointments[$key]['appointment_date'] = $_POST['appointment_date'];
-		$update_appointment = $appointments[$key]['appointment_date'];
-		print_r($value);
+		$responce_to_user = $appointments[$key];
+		$responce_to_user = json_encode($responce_to_user);
+		print_r($responce_to_user);
 		break;
 	}
 }

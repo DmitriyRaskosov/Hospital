@@ -18,12 +18,16 @@ foreach ($appointments as $key => $value) {
 	if ($received_id == $value['id']) {
 		unset($appointments[$key]);
 		$flag_match = 1;
-		echo "Запись удалена!";
+		$responce_to_user = ['result' => "Запись удалена!"];
+		$responce_to_user = json_encode($responce_to_user);
+		print_r($responce_to_user);
 		break;
 	}
 }
 if ($flag_match == 0) {
-	echo "Запись не найдена!";
+	$responce_to_user = ['result' => "Запись не найдена!"];
+	$responce_to_user = json_encode($responce_to_user);
+	print_r($responce_to_user);
 }
 
 // uploading new data

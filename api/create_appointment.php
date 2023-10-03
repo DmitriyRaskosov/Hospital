@@ -37,7 +37,9 @@ $new_appointment = [
 	'appointment_date' => $_POST['appointment_date'],
 	'doctor_type' => $_POST['doctor_type']
 ];
-print_r($new_appointment);
+$responce_to_user = $new_appointment;
+$responce_to_user = json_encode($responce_to_user);
+print_r($responce_to_user);
 
 // uploading new data
 $appointments[] = $new_appointment;
