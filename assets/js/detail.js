@@ -23,9 +23,9 @@ $(document).ready(function () {
             '<div class="box post">' +
             '<a href="detail.html?id='+app.id+'" class="image left"><img src="images/pic01.jpg" alt="" /></a>' +
             '<div class="inner">' +
-            '<h2>Пациент: '+app.patient_name+'</h2>' +
+            '<h2>Пациент: '+app.name+'</h2>' +
             '<h3>Врач: '+app.doctor_type+'</h3>' +
-            '<p>Запись на '+app.appointment_date+'</p>' +
+            '<p>Запись на '+app.date+'</p>' +
             '</div>' +
             '</div>' +
             '</section>'

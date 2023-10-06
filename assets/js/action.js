@@ -17,7 +17,7 @@ $(document).ready(function () {
             '<a href="detail.html?id='+app.id+'" class="image left"><img src="images/pic01.jpg" alt="" /></a>' +
             '<div class="inner">' +
             '<h3>'+app.doctor_type+'</h3>' +
-            '<p>Запись на '+app.appointment_date+'</p>' +
+            '<p>Запись на '+app.date+'</p>' +
             '</div>' +
             '</div>' +
             '</section>'
