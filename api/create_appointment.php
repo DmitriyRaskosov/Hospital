@@ -3,10 +3,10 @@ header('Content-Type: application/json; charset=utf-8');
 
 // validation
 // doesn't validating any spec. char. and data type for now
-if (!isset($_POST['patient_name']) || strlen($_POST['patient_name']) <= 0) {
+if (!isset($_POST['name']) || strlen($_POST['name']) <= 0) {
 	throw new exception('Имя не указано');
 }
-if (!isset($_POST['appointment_date']) || strlen($_POST['appointment_date']) <= 0) {
+if (!isset($_POST['date']) || strlen($_POST['date']) <= 0) {
 	throw new exception('Дата записи не указана');
 }
 if (!isset($_POST['doctor_type']) || strlen($_POST['doctor_type']) <= 0) {
@@ -33,8 +33,8 @@ function getLastId($appointments)
 $new_id = getLastId($appointments) + 1;
 $new_appointment = [
 	'id' => $new_id,
-	'patient_name' => $_POST['patient_name'],
-	'appointment_date' => $_POST['appointment_date'],
+	'name' => $_POST['name'],
+	'date' => $_POST['date'],
 	'doctor_type' => $_POST['doctor_type']
 ];
 $responce_to_user = $new_appointment;
