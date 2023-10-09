@@ -9,7 +9,7 @@ if (!isset($_GET['id']) || !(int)$_GET['id']) {
 $received_id = $_GET['id'];
 
 // downloading all data
-$doctors = file_get_contents('../data/doctors.json');
+$doctors = file_get_contents('../../data/doctors.json');
 $doctors = (array)json_decode($doctors, true);
 
 // searching and show result to user

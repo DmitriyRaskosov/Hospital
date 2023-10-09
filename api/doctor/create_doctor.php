@@ -20,7 +20,7 @@ if (!isset($_POST['doctor_type']) || strlen($_POST['doctor_type']) <= 0) {
 }
 
 // downloading all data
-$doctors = file_get_contents('../data/doctors.json');
+$doctors = file_get_contents('../../data/doctors.json');
 $doctors = (array)json_decode($doctors, true);
 
 // getting the last assigned ID
@@ -50,4 +50,4 @@ print_r($responce_to_user);
 // uploading new data
 $doctors[] = $new_doctor;
 $doctors = json_encode($doctors);
-file_put_contents('../data/doctors.json', $doctors);
+file_put_contents('../../data/doctors.json', $doctors);

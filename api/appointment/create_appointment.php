@@ -14,7 +14,7 @@ if (!isset($_POST['doctor_type']) || strlen($_POST['doctor_type']) <= 0) {
 }
 
 // downloading all data
-$appointments = file_get_contents('../data/appointments.json');
+$appointments = file_get_contents('../../data/appointments.json');
 $appointments = (array)json_decode($appointments, true);
 
 // getting the last assigned ID
@@ -44,4 +44,4 @@ print_r($responce_to_user);
 // uploading new data
 $appointments[] = $new_appointment;
 $appointments = json_encode($appointments);
-file_put_contents('../data/appointments.json', $appointments);
+file_put_contents('../../data/appointments.json', $appointments);

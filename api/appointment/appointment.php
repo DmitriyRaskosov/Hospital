@@ -5,28 +5,26 @@ header('Content-Type: application/json; charset=utf-8');
 if (!isset($_GET['id']) || !(int)$_GET['id']) {
 	throw new exception('ID не указан, не является числовым значением или равен нулю');
 }
-if (!isset($_POST['date'])) {
-	throw new exception('хуй, а не дата');
-}
 
-$upd_id = $_GET['id'];
-$upd_date = $_POST['date'];
+$received_id = $_GET['id'];
 
 // downloading all data
-$appointments = file_get_contents('../data/appointments.json');
+$appointments = file_get_contents('../../data/appointments.json');
 $appointments = (array)json_decode($appointments, true);
 
-// updating data and show it to user
+// searching and show result to user
+$match = 0;
 foreach ($appointments as $key => $value) {
-	if ($upd_id == $value['id']) {
-		$appointments[$key]['date'] = $_POST['date'];
-		$responce_to_user = $appointments[$key];
+	if ($received_id == $value['id']) {
+		$match = 1;
+		$responce_to_user = $value;
 		$responce_to_user = json_encode($responce_to_user);
 		print_r($responce_to_user);
 		break;
 	}
 }
-
-// uploading new data
-$appointments = json_encode($appointments);
-file_put_contents('../data/appointments.json', $appointments);
+if ($match == 0) {
+	$responce_to_user = ['result' => "Запись не найдена!"];
+	$responce_to_user = json_encode($responce_to_user);
+	print_r($responce_to_user);
+}
