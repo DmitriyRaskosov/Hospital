@@ -11,7 +11,7 @@ $(document).ready(function () {
     console.log(app_id);
     $.ajax({
         method: "GET",
-        url: "api/appointment.php?id="+app_id,
+        url: "api/appointment/appointment.php?id="+app_id,
         context: document.body
     }).success(function(data) {
         console.log(data);
@@ -38,7 +38,7 @@ $(document).ready(function () {
         console.log(body);
         $.ajax({
             method: "POST",
-            url: "api/update_appointment.php?id="+app_id,
+            url: "api/appointment/update_appointment.php?id="+app_id,
             data: body,
             context: document.body
         }).success(function(data) {
@@ -51,7 +51,7 @@ $(document).ready(function () {
     $('.delete_appointment').click(function(){
         $.ajax({
             method: "DELETE",
-            url: "api/delete_appointment.php?id="+app_id,
+            url: "api/appointment/delete_appointment.php?id="+app_id,
             context: document.body
         }).success(function(data) {
             alert('Запись отменена');

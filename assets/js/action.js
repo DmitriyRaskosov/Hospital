@@ -1,7 +1,7 @@
 $(document).ready(function () {
     console.log('alive!');
     $.ajax({
-        url: "api/appointments.php",
+        url: "api/appointment/appointments.php",
         context: document.body
     }).done(function(data) {
         console.log(data);
@@ -33,7 +33,7 @@ $(document).ready(function () {
         console.log(body);
         $.ajax({
             method: "POST",
-            url: "api/create_appointment.php",
+            url: "api/appointment/create_appointment.php",
             data: body,
         }).always(function() {
             alert('Новый талон добавлен!');
