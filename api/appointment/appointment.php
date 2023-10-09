@@ -18,6 +18,17 @@ foreach ($appointments as $key => $value) {
 	if ($received_id == $value['id']) {
 		$match = 1;
 		$responce_to_user = $value;
+
+		$translations = file_get_contents('../../data/translations.json');
+		$translations = (array)json_decode($translations, true);
+
+		foreach ($translations as $tr_key => $tr_value) {
+			if ($tr_value['en'] == $responce_to_user['doctor_type']) {
+				$responce_to_user['doctor_type_ru'] = $tr_value['ru'];
+				break;
+			}
+		}
+
 		$responce_to_user = json_encode($responce_to_user);
 		print_r($responce_to_user);
 		break;
