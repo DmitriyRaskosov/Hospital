@@ -33,7 +33,7 @@ $new_translation = [
 	'ru' => $_POST['ru'],
 	'en' => $_POST['en']
 ];
-$responce_to_user = $new_translation;
+$responce_to_user[] = $new_translation;
 $responce_to_user = json_encode($responce_to_user);
 print_r($responce_to_user);
 

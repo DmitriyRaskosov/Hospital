@@ -25,7 +25,7 @@ foreach ($translations as $key => $value) {
 	if ($upd_id == $value['id']) {
 		$translations[$key]['ru'] = $_POST['ru'];
 		$translations[$key]['en'] = $_POST['en'];
-		$responce_to_user = $translations[$key];
+		$responce_to_user[] = $translations[$key];
 		$responce_to_user = json_encode($responce_to_user);
 		print_r($responce_to_user);
 		break;

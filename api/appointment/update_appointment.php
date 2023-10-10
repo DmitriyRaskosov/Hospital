@@ -1,6 +1,8 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
+include '../translator.php';
+
 // validation
 if (!isset($_GET['id']) || !(int)$_GET['id']) {
 	throw new exception('ID не указан, не является числовым значением или равен нулю');
@@ -20,8 +22,9 @@ $appointments = (array)json_decode($appointments, true);
 foreach ($appointments as $key => $value) {
 	if ($upd_id == $value['id']) {
 		$appointments[$key]['date'] = $_POST['date'];
-		$responce_to_user = $appointments[$key];
+		$responce_to_user[] = $appointments[$key];
 		$responce_to_user = json_encode($responce_to_user);
+		$responce_to_user = add_translation($responce_to_user);
 		print_r($responce_to_user);
 		break;
 	}

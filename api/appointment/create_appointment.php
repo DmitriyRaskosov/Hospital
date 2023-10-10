@@ -1,6 +1,8 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
+include '../translator.php';
+
 // validation
 // doesn't validating any spec. char. and data type for now
 if (!isset($_POST['name']) || strlen($_POST['name']) <= 0) {
@@ -37,8 +39,9 @@ $new_appointment = [
 	'date' => $_POST['date'],
 	'doctor_type' => $_POST['doctor_type']
 ];
-$responce_to_user = $new_appointment;
+$responce_to_user[] = $new_appointment;
 $responce_to_user = json_encode($responce_to_user);
+$responce_to_user = add_translation($responce_to_user);
 print_r($responce_to_user);
 
 // uploading new data

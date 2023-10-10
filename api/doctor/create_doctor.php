@@ -43,7 +43,7 @@ $new_doctor = [
 	'doctor_type' => $_POST['doctor_type'],
 	'cost' => $_POST['cost']
 ];
-$responce_to_user = $new_doctor;
+$responce_to_user[] = $new_doctor;
 $responce_to_user = json_encode($responce_to_user);
 print_r($responce_to_user);
 
