@@ -2,14 +2,14 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-function translation($id)
+function translation($en)
 {
 	$translations = file_get_contents('../../data/translations.json');
 	$translations = (array)json_decode($translations, true);
 
 	$match = 0;
 	foreach ($translations as $key => $value) {
-		if ($id == $value['id']) {
+		if ($en == $value['en']) {
 			$match = 1;
 			$responce[] = $value;
 			$responce = json_encode($responce);
@@ -23,18 +23,12 @@ function translation($id)
 	}
 }
 
-$test = translation(1);
-print_r($test);
-
 
 function translations()
 {
 	$translations = file_get_contents('../../data/translations.json');
 	return $translations;
 }
-
-$test = translations();
-print_r($test);
 
 
 function create_translate($en, $ru)
@@ -66,9 +60,6 @@ function create_translate($en, $ru)
 	return $responce;
 }
 
-$test = create_translate('мочух', 'моча');
-print_r($test);
-
 
 function update_translation($en, $ru)
 {
@@ -90,9 +81,6 @@ function update_translation($en, $ru)
 
 	return $responce;
 }
-
-$test = update_translation('мочух', 'эндоскоп');
-print_r($test);
 
 
 function delete_translation($en)
@@ -121,6 +109,3 @@ function delete_translation($en)
 		return $responce;
 	}
 }
-	
-$test = delete_translation('мочух');
-print_r($test);

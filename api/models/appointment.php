@@ -2,13 +2,10 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-function appointment($id) 
+function appointment($id, $data) 
 {
-	$appointments = file_get_contents('../../data/appointments.json');
-	$appointments = (array)json_decode($appointments, true);
-
 	$match = 0;
-	foreach ($appointments as $key => $value) {
+	foreach ($data as $key => $value) {
 		if ($id == $value['id']) {
 			$match = 1;
 			$responce[] = $value;
@@ -23,27 +20,18 @@ function appointment($id)
 	}
 }
 
-$test = appointment(1);
-print_r($test);
-
-
-function appointments()
+// кажется бессмысленным, но я просто привёл всё к более-менее единому формату + возможно от этой функции будет требоваться что-то ещё.
+function appointments($data)
 {
-	$appointments = file_get_contents('../../data/appointments.json');
-	return $appointments;
+	$data = json_encode($data);
+	return $data;
 }
 
-$test = appointments();
-print_r($test);
 
-
-function create_appointment($name, $date, $doctor_type)
+function create_appointment($name, $date, $doctor_type, $data)
 {
-	$appointments = file_get_contents('../../data/appointments.json');
-	$appointments = (array)json_decode($appointments, true);
-
 	$max_num = null;
-	foreach ($appointments as $key => $value) {
+	foreach ($data as $key => $value) {
 		if ($max_num < $value['id']) {
 			$max_num = $value['id'];
 		}
@@ -58,69 +46,39 @@ function create_appointment($name, $date, $doctor_type)
 	];
 
 	$responce[] = $new_appointment;
-
-	$appointments[] = $new_appointment;
-	$appointments = json_encode($appointments);
-	file_put_contents('../../data/appointments.json', $appointments);
-
 	$responce = json_encode($responce);
 	return $responce;
 }
 
-$test = create_appointment('sirgay', '20.03.2020', 'endocrinologist');
-print_r($test);
 
-
-function update_appointment($id, $date)
+function update_appointment($id, $date, $data)
 {
-	$appointments = file_get_contents('../../data/appointments.json');
-	$appointments = (array)json_decode($appointments, true);
-
-	foreach ($appointments as $key => $value) {
+	foreach ($data as $key => $value) {
 		if ($id == $value['id']) {
-			$appointments[$key]['date'] = $date;
-			$responce[] = $appointments[$key];
-			$responce = json_encode($responce);
+			$data[$key]['date'] = $date;
 			break;
 		}
 	}
-
-	$appointments = json_encode($appointments);
-	file_put_contents('../../data/appointments.json', $appointments);
-
-	return $responce;
+	$updated_data = json_encode($data);
+	return $updated_data;
 }
 
-$test = update_appointment(3, '30-21-2020');
-print_r($test);
 
-
-function delete_appointment($id)
+function delete_appointment($id, $data)
 {
-	$appointments = file_get_contents('../../data/appointments.json');
-	$appointments = (array)json_decode($appointments, true);
-
 	$flag_match = 0;
 
-	foreach ($appointments as $key => $value) {
+	foreach ($data as $key => $value) {
 		if ($id == $value['id']) {
-			unset($appointments[$key]);
+			unset($data[$key]);
 			$flag_match = 1;
-			$responce[] = ['result' => "Запись удалена!"];
-			$responce = json_encode($responce);
-
-			$appointments = json_encode($appointments);
-			file_put_contents('../../data/appointments.json', $appointments);
-
-			return print_r($responce);
+			$data = json_encode($data);
+			return $data;
 		}
 	}
 	if ($flag_match == 0) {
 		$responce[] = ['result' => "Запись не найдена!"];
 		$responce = json_encode($responce);
-		return print_r($responce);
+		return $responce;
 	}
 }
-
-$test = delete_appointment(2);
-print_r($test);
