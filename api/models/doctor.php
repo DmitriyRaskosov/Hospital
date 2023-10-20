@@ -2,13 +2,10 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-function doctor($id) 
+function doctor($id, $data) 
 {
-	$doctors = file_get_contents('../../data/doctors.json');
-	$doctors= (array)json_decode($doctors, true);
-
 	$match = 0;
-	foreach ($doctors as $key => $value) {
+	foreach ($data as $key => $value) {
 		if ($id == $value['id']) {
 			$match = 1;
 			$responce[] = $value;
@@ -23,30 +20,25 @@ function doctor($id)
 	}
 }
 
-$test = doctor(1);
-print_r($test);
 
-
-function doctors()
+function doctors($data)
 {
-	$doctors = file_get_contents('../../data/doctors.json');
-	return $doctors;
+	$data = json_encode($data);
+	return $data;
 }
 
-$test = doctors();
-print_r($test);
 
-
-function create_doctor($name, $doctor_type, $cost)
+function create($name, $doctor_type, $cost, $data)
 {
-	$doctors = file_get_contents('../../data/doctors.json');
-	$doctors = (array)json_decode($doctors, true);
-
 	$max_num = null;
-	foreach ($doctors as $key => $value) {
-		if ($max_num < $value['id']) {
-			$max_num = $value['id'];
-		}
+	foreach ($data as $key => $value) {
+		if (isset($value['id'])) {
+			if ($max_num < $value['id']) {
+				$max_num = $value['id'];
+			}
+		} else {
+			$max_num = 0;
+		}	
 	}
 
 	$new_id = $max_num + 1;
@@ -58,61 +50,34 @@ function create_doctor($name, $doctor_type, $cost)
 	];
 
 	$responce[] = $new_doctor;
-
-	$doctors[] = $new_doctor;
-	$doctors = json_encode($doctors);
-	file_put_contents('../../data/doctors.json', $doctors);
-	
 	$responce = json_encode($responce);
 	return $responce;
 }
 
-$test = create_doctor('sirgay', 'endocrinologist', '5000');
-print_r($test);
 
-
-function update_doctor($id, $cost)
+function update($id, $cost, $data)
 {
-	$doctors = file_get_contents('../../data/doctors.json');
-	$doctors = (array)json_decode($doctors, true);
-
-	foreach ($doctors as $key => $value) {
+	foreach ($data as $key => $value) {
 		if ($id == $value['id']) {
-			$doctors[$key]['cost'] = $cost;
-			$responce[] = $doctors[$key];
-			$responce = json_encode($responce);
+			$data[$key]['cost'] = $cost;
 			break;
 		}
 	}
-
-	$doctors = json_encode($doctors);
-	file_put_contents('../../data/doctors.json', $doctors);
-
-	return $responce;
+	$updated_data = json_encode($data);
+	return $updated_data;
 }
 
-$test = update_doctor(1, '4999');
-print_r($test);
 
-
-function delete_doctor($id)
+function delete_doctor($id, $data)
 {
-	$doctors = file_get_contents('../../data/doctors.json');
-	$doctors = (array)json_decode($doctors, true);
-
 	$flag_match = 0;
 
-	foreach ($doctors as $key => $value) {
+	foreach ($data as $key => $value) {
 		if ($id == $value['id']) {
-			unset($doctors[$key]);
+			unset($data[$key]);
 			$flag_match = 1;
-			$responce[] = ['result' => "Ты уволил доктора, больше некому щупать твою простату, сладенький!"];
-			$responce = json_encode($responce);
-
-			$doctors = json_encode($doctors);
-			file_put_contents('../../data/doctors.json', $doctors);
-
-			return $responce;
+			$data = json_encode($data);
+			return $data;
 		}
 	}
 	if ($flag_match == 0) {
@@ -121,6 +86,3 @@ function delete_doctor($id)
 		return $responce;
 	}
 }
-
-$test = delete_doctor(2);
-print_r($test);

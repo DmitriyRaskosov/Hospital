@@ -2,13 +2,10 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-function translation($en)
+function translation($en, $data)
 {
-	$translations = file_get_contents('../../data/translations.json');
-	$translations = (array)json_decode($translations, true);
-
 	$match = 0;
-	foreach ($translations as $key => $value) {
+	foreach ($data as $key => $value) {
 		if ($en == $value['en']) {
 			$match = 1;
 			$responce[] = $value;
@@ -24,23 +21,24 @@ function translation($en)
 }
 
 
-function translations()
+function translations($data)
 {
-	$translations = file_get_contents('../../data/translations.json');
-	return $translations;
+	$data = json_encode($data);
+	return $data;
 }
 
 
-function create_translate($en, $ru)
+function create($en, $ru, $data)
 {
-	$translations = file_get_contents('../../data/translations.json');
-	$translations = (array)json_decode($translations, true);
-
 	$max_num = null;
-	foreach ($translations as $key => $value) {
-		if ($max_num < $value['id']) {
-			$max_num = $value['id'];
-		}
+	foreach ($data as $key => $value) {
+		if (isset($value['id'])) {
+			if ($max_num < $value['id']) {
+				$max_num = $value['id'];
+			}
+		} else {
+			$max_num = 0;
+		}	
 	}
 
 	$new_id = $max_num + 1;
@@ -51,56 +49,36 @@ function create_translate($en, $ru)
 	];
 
 	$responce[] = $new_translation;
-
-	$translations[] = $new_translation;
-	$translations = json_encode($translations);
-	file_put_contents('../../data/translations.json', $translations);
-
 	$responce = json_encode($responce);
 	return $responce;
 }
 
 
-function update_translation($en, $ru)
+function update($prev_en, $new_en, $ru, $data)
 {
-	$translations = file_get_contents('../../data/translations.json');
-	$translations = (array)json_decode($translations, true);
-
-	foreach ($translations as $key => $value) {
-		if ($en == $value['en']) {
-			$translations[$key]['en'] = $en;
-			$translations[$key]['ru'] = $ru;
-			$responce[] = $translations[$key];
-			$responce = json_encode($responce);
+	foreach ($data as $key => $value) {
+		if ($prev_en == $value['en']) {
+			$data[$key]['en'] = $new_en;
+			$data[$key]['ru'] = $ru;
 			break;
 		}
 	}
-
-	$translations = json_encode($translations);
-	file_put_contents('../../data/translations.json', $translations);
-
-	return $responce;
+	$updated_data = json_encode($data);
+	return $updated_data;
 }
 
 
-function delete_translation($en)
+function delete($en, $data)
 {
-	$translations = file_get_contents('../../data/translations.json');
-	$translations = (array)json_decode($translations, true);
-
 	$flag_match = 0;
-
-	foreach ($translations as $key => $value) {
+	$result = [];
+	foreach ($data as $key => $value) {
 		if ($en == $value['en']) {
-			unset($translations[$key]);
+			unset($data[$key]);
 			$flag_match = 1;
-			$responce[] = ['result' => "Перевод удалён!"];
-			$responce = json_encode($responce);
-
-			$translations = json_encode($translations);
-			file_put_contents('../../data/translations.json', $translations);
-
-			return $responce;
+			$data = array_values($data);
+			$data = json_encode($data);
+			return $data;
 		}
 	}
 	if ($flag_match == 0) {

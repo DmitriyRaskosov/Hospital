@@ -28,13 +28,17 @@ function appointments($data)
 }
 
 
-function create_appointment($name, $date, $doctor_type, $data)
+function create($name, $date, $doctor_type, $data)
 {
 	$max_num = null;
 	foreach ($data as $key => $value) {
-		if ($max_num < $value['id']) {
-			$max_num = $value['id'];
-		}
+		if (isset($value['id'])) {
+			if ($max_num < $value['id']) {
+				$max_num = $value['id'];
+			}
+		} else {
+			$max_num = 0;
+		}	
 	}
 
 	$new_id = $max_num + 1;
@@ -51,7 +55,7 @@ function create_appointment($name, $date, $doctor_type, $data)
 }
 
 
-function update_appointment($id, $date, $data)
+function update($id, $date, $data)
 {
 	foreach ($data as $key => $value) {
 		if ($id == $value['id']) {
@@ -64,7 +68,7 @@ function update_appointment($id, $date, $data)
 }
 
 
-function delete_appointment($id, $data)
+function delete($id, $data)
 {
 	$flag_match = 0;
 

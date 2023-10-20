@@ -3,6 +3,8 @@
 header('Content-Type: application/json; charset=utf-8');
 
 include_once '../models/appointment.php';
+include_once '../translator.php';
+
 // validation
 /*
 !isset($_GET['id']) || !(int)$_GET['id'] ? throw new exception('ID не указан, не является числовым значением или равен нулю') : NULL;
@@ -23,18 +25,20 @@ $data = (array)json_decode($data, true);
 
 // получить конкретную запись
 if ($request['request_type'] == 'appointment') {
-	print_r(appointment($request['id'], $data));
+	$responce = appointment($request['id'], $data);
+	print_r(add_translation($responce));
 }
 
 // получить все записи
 if ($request['request_type'] == 'appointments') {
-	print_r(appointments($data));
+	$responce = appointments($data);
+	print_r(add_translation($responce));
 }
 
 // создать новую запись
 if ($request['request_type'] == 'create') {
-	$created_appointment = create_appointment($request['name'], $request['date'], $request['doctor_type'], $data);
-	print_r($created_appointment);
+	$created_appointment = create($request['name'], $request['date'], $request['doctor_type'], $data);
+	print_r(add_translation($created_appointment));
 
 	$created_appointment = (array)json_decode($created_appointment, true);
 	foreach ($created_appointment as $key => $value) {
@@ -46,9 +50,11 @@ if ($request['request_type'] == 'create') {
 
 // обновить дату существующей записи
 if ($request['request_type'] == 'update') {
-	$updated_data = update_appointment($request['id'], $request['date'], $data);
+	$updated_data = update($request['id'], $request['date'], $data);
 	$updated_data = (array)json_decode($updated_data, true);
-	print_r(appointment($request['id'], $updated_data));
+
+	$updated_appointment = appointment($request['id'], $updated_data);
+	print_r(add_translation($updated_appointment));
 	
 	$updated_data = json_encode($updated_data);
 	file_put_contents('../../data/appointments.json', $updated_data);
@@ -56,20 +62,38 @@ if ($request['request_type'] == 'update') {
 
 // удалить запись
 if ($request['request_type'] == 'delete') {
-	$result = delete_appointment($request['id'], $data);
+	print_r (delete_request());
+}
+
+function delete_request() 
+{
+	global $request;
+	global $data;
+	$responce = [];
+	$result = delete($request['id'], $data);
 	$result = (array)json_decode($result, true);
+	if (count($result) > 0 && count($result[0]) != 1) {
+		foreach ($result as $key => $value) {
+			if (count($value) != 1) {
+				$responce[] = ['result' => "Запись удалена!"];
+				$responce = json_encode($responce);
 
-	foreach ($result as $key => $value) {
-		if (count($value) != 1) {
-			$responce[] = ['result' => "Запись удалена!"];
-			$responce = json_encode($responce);
-			print_r($responce);
+				$data = json_encode($result);
+				file_put_contents('../../data/appointments.json', $data);
 
-			$data = json_encode($result);
-			file_put_contents('../../data/appointments.json', $data);
-		} else {
-			$result = json_encode($result);
-			print_r($result);
+				return $responce;
+			}
 		}
+	} elseif (count($result) == 1) { 
+		$result = json_encode($result);
+		return $result;
+	} else { // Когда все записи будут удалены, тогда будет этот ответ. Он же удалит последнюю запись.
+		$responce[] = ['result' => "Запись удалена, больше записей нет"];
+		$responce = json_encode($responce);
+
+		$data = json_encode($result);
+		file_put_contents('../../data/appointments.json', $data);
+
+		return $responce;
 	}
 }
