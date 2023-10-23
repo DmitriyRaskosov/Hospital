@@ -2,7 +2,7 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-function appointment($id, $data) 
+function getOne($id, $data)
 {
 	$match = 0;
 	foreach ($data as $key => $value) {
@@ -21,7 +21,7 @@ function appointment($id, $data)
 }
 
 // кажется бессмысленным, но я просто привёл всё к более-менее единому формату + возможно от этой функции будет требоваться что-то ещё.
-function appointments($data)
+function getAll($data)
 {
 	$data = json_encode($data);
 	return $data;

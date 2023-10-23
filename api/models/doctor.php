@@ -2,7 +2,7 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-function doctor($id, $data) 
+function getOne($id, $data) 
 {
 	$match = 0;
 	foreach ($data as $key => $value) {
@@ -21,7 +21,7 @@ function doctor($id, $data)
 }
 
 
-function doctors($data)
+function getAll($data)
 {
 	$data = json_encode($data);
 	return $data;
@@ -68,7 +68,7 @@ function update($id, $cost, $data)
 }
 
 
-function delete_doctor($id, $data)
+function delete($id, $data)
 {
 	$flag_match = 0;
 

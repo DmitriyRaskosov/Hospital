@@ -60,13 +60,6 @@ if ($request['request_type'] == 'update') {
 
 // удалить перевод
 if ($request['request_type'] == 'delete') {
-	print_r (delete_request());
-}
-
-function delete_request() 
-{
-	global $request;
-	global $data;
 	$responce = [];
 	$result = delete($request['en'], $data);
 	$result = (array)json_decode($result, true);
@@ -79,12 +72,13 @@ function delete_request()
 				$data = json_encode($result);
 				file_put_contents('../../data/translations.json', $data);
 
-				return $responce;
+				print_r($responce);
+				break;
 			}
 		}
 	} elseif (count($result) == 1) {
 		$result = json_encode($result);
-		return $result;
+		print_r($result);
 	} else { 
 		$responce[] = ['result' => "Перевод удалён, переводов больше нет"];
 		$responce = json_encode($responce);
@@ -92,6 +86,6 @@ function delete_request()
 		$data = json_encode($result);
 		file_put_contents('../../data/translations.json', $data);
 
-		return $responce;
+		print_r($responce);
 	}
 }

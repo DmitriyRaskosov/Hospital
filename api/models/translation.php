@@ -2,7 +2,7 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-function translation($en, $data)
+function getOne($en, $data)
 {
 	$match = 0;
 	foreach ($data as $key => $value) {
@@ -21,7 +21,7 @@ function translation($en, $data)
 }
 
 
-function translations($data)
+function getAll($data)
 {
 	$data = json_encode($data);
 	return $data;

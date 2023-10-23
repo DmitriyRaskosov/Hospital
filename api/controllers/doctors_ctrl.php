@@ -62,13 +62,6 @@ if ($request['request_type'] == 'update') {
 
 // удалить данные врача
 if ($request['request_type'] == 'delete') {
-	print_r (delete_request());
-}
-
-function delete_request() 
-{
-	global $request;
-	global $data;
 	$responce = [];
 	$result = delete($request['id'], $data);
 	$result = (array)json_decode($result, true);
@@ -81,12 +74,13 @@ function delete_request()
 				$data = json_encode($result);
 				file_put_contents('../../data/doctors.json', $data);
 
-				return $responce;
+				print_r($responce);
+				break;
 			}
 		}
 	} elseif (count($result) == 1) { // При попытке удалить данные врача, которые уже были удалены, ответом пользователю будет "Доктор не найден!" из функции delete_doctor
 		$result = json_encode($result);
-		return $result;
+		print_r($result);
 	} else { // Когда данные всех врачей будут удалены, тогда будет этот ответ. Он же удалит данные последнего врача.
 		$responce[] = ['result' => "Данные врача удалены, врачи закончились, остались Малахов и Малышева, брать будете?"];
 		$responce = json_encode($responce);
@@ -94,6 +88,6 @@ function delete_request()
 		$data = json_encode($result);
 		file_put_contents('../../data/doctors.json', $data);
 
-		return $responce;
+		print_r($responce);
 	}
 }

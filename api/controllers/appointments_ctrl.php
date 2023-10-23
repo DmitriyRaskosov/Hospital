@@ -18,7 +18,7 @@ $data = add_translation($data);
 */
 
 $request = $_REQUEST;
-
+echo $request;
 $data = file_get_contents('../../data/appointments.json');
 $data = (array)json_decode($data, true);
 
@@ -62,13 +62,6 @@ if ($request['request_type'] == 'update') {
 
 // удалить запись
 if ($request['request_type'] == 'delete') {
-	print_r (delete_request());
-}
-
-function delete_request() 
-{
-	global $request;
-	global $data;
 	$responce = [];
 	$result = delete($request['id'], $data);
 	$result = (array)json_decode($result, true);
@@ -81,12 +74,13 @@ function delete_request()
 				$data = json_encode($result);
 				file_put_contents('../../data/appointments.json', $data);
 
-				return $responce;
+				print_r($responce);
+				break;
 			}
 		}
 	} elseif (count($result) == 1) { 
 		$result = json_encode($result);
-		return $result;
+		print_r($result);
 	} else { // Когда все записи будут удалены, тогда будет этот ответ. Он же удалит последнюю запись.
 		$responce[] = ['result' => "Запись удалена, больше записей нет"];
 		$responce = json_encode($responce);
@@ -94,6 +88,6 @@ function delete_request()
 		$data = json_encode($result);
 		file_put_contents('../../data/appointments.json', $data);
 
-		return $responce;
+		print_r($responce);
 	}
 }
