@@ -2,9 +2,6 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-include_once '../models/appointment.php';
-include_once '../translator.php';
-
 // validation
 /*
 !isset($_GET['id']) || !(int)$_GET['id'] ? throw new exception('ID не указан, не является числовым значением или равен нулю') : NULL;
@@ -17,21 +14,19 @@ include '../translator.php';
 $data = add_translation($data);
 */
 
-$request = $_REQUEST;
-echo $request;
-$data = file_get_contents('../../data/appointments.json');
+$data = file_get_contents('../data/appointments.json');
 $data = (array)json_decode($data, true);
 
 
 // получить конкретную запись
 if ($request['request_type'] == 'appointment') {
-	$responce = appointment($request['id'], $data);
+	$responce = getOne($request['id'], $data);
 	print_r(add_translation($responce));
 }
 
 // получить все записи
 if ($request['request_type'] == 'appointments') {
-	$responce = appointments($data);
+	$responce = getAll($data);
 	print_r(add_translation($responce));
 }
 
@@ -45,7 +40,7 @@ if ($request['request_type'] == 'create') {
 		$data[] = $created_appointment[$key];
 	}
 	$data = json_encode($data);
-	file_put_contents('../../data/appointments.json', $data);
+	file_put_contents('../data/appointments.json', $data);
 }
 
 // обновить дату существующей записи
@@ -53,11 +48,11 @@ if ($request['request_type'] == 'update') {
 	$updated_data = update($request['id'], $request['date'], $data);
 	$updated_data = (array)json_decode($updated_data, true);
 
-	$updated_appointment = appointment($request['id'], $updated_data);
+	$updated_appointment = getOne($request['id'], $updated_data);
 	print_r(add_translation($updated_appointment));
 	
 	$updated_data = json_encode($updated_data);
-	file_put_contents('../../data/appointments.json', $updated_data);
+	file_put_contents('../data/appointments.json', $updated_data);
 }
 
 // удалить запись
@@ -72,7 +67,7 @@ if ($request['request_type'] == 'delete') {
 				$responce = json_encode($responce);
 
 				$data = json_encode($result);
-				file_put_contents('../../data/appointments.json', $data);
+				file_put_contents('../data/appointments.json', $data);
 
 				print_r($responce);
 				break;
@@ -86,7 +81,7 @@ if ($request['request_type'] == 'delete') {
 		$responce = json_encode($responce);
 
 		$data = json_encode($result);
-		file_put_contents('../../data/appointments.json', $data);
+		file_put_contents('../data/appointments.json', $data);
 
 		print_r($responce);
 	}

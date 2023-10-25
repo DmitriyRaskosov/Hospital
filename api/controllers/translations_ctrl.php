@@ -23,13 +23,13 @@ $data = (array)json_decode($data, true);
 
 // получить конкретный перевод
 if ($request['request_type'] == 'translation') {
-	$responce = translation($request['en'], $data);
+	$responce = getOne($request['en'], $data);
 	print_r($responce);
 }
 
 // получить список существующих переводов
 if ($request['request_type'] == 'translations') {
-	$responce = translations($data);
+	$responce = getAll($data);
 	print_r($responce);
 }
 

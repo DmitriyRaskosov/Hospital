@@ -25,13 +25,13 @@ $data = (array)json_decode($data, true);
 
 // получить конкретного врача
 if ($request['request_type'] == 'doctor') {
-	$responce = doctor($request['id'], $data);
+	$responce = getOne($request['id'], $data);
 	print_r(add_translation($responce));
 }
 
 // получить список врачей
 if ($request['request_type'] == 'doctors') {
-	$responce = doctors($data);
+	$responce = getAll($data);
 	print_r(add_translation($responce));
 }
 

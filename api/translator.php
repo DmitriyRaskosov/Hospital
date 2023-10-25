@@ -2,7 +2,7 @@
 
 function add_translation($input) 
 {
-	$translations = file_get_contents('../../data/translations.json');
+	$translations = file_get_contents('../data/translations.json');
 	$translations = (array)json_decode($translations, true);
 
 	$input = (array)json_decode($input, true);
