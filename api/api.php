@@ -1,7 +1,5 @@
 <?php
 
-include_once ('classes/controller_app.php');
-
 $uri_in_array = explode('/', $_SERVER['REQUEST_URI']);
 
 // запрос пользователя в виде массива, из которого можно будет понять, что именно пользователь хочет сделать
@@ -20,6 +18,29 @@ print_r($input_data);
 
 
 if ($request['ctrl_request'] == 'appointments') {
-	$result = ControllerAppoinment::getData($request);
-	print_r($result);
+	include_once ('classes/controller_app.php');
+}
+if ($request['ctrl_request'] == 'doctors') {
+	include_once ('classes/controller_doc.php');
+}
+if ($request['ctrl_request'] == 'translations') {
+	include_once ('classes/controller_tr.php');
+}
+
+
+if ($request['method'] == 'GET') {
+	if (!isset($request['id'])) {
+		echo 'вызов метода getData и метода getAll';
+	} elseif (isset($request['id'])) {
+		echo 'вызов метода getData и метода getOne';
+	}
+}
+if ($request['method'] == 'POST') {
+	echo 'вызов метода createData';
+}
+if ($request['method'] == 'PUT') {
+	echo 'вызов метода updateData';
+}
+if ($request['method'] == 'DELETE') {
+	echo 'вызов метода deleteData';
 }
