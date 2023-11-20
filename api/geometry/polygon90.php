@@ -1,8 +1,14 @@
 <?php
 
-// прямоугольный треугольник
+class Polygon90 {
 
-$a;
-$b;
+	// прямоугольный треугольник 
+	// a, b - стороны
 
-$s = 0.5*($a*$b);
+	$parameters = ['a' => null, 'b' => null];
+
+	// S = (a*b)/2
+	public function area ($parameters) {
+		$area = ($parameters['a'] * $parameters['b']) / 2;
+	}
+}

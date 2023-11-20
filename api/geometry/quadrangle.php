@@ -1,6 +1,14 @@
 <?php
 
-$a;
-$b;
+class Quadrangle {
 
-$s = $a * $b;
+	// четырёхугольник (прямоугольник)
+	// a, b - стороны
+
+	$parameters = ['a' => null, 'b' => null];
+
+	// S = a*b
+	public function area ($parameters) {
+		$area = $parameters['a'] * $parameters['b'];
+	}
+}

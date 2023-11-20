@@ -1,6 +1,13 @@
 <?php
 
-$a;
-$h;
+class Triangle {
 
-$s = 0.5*($a*$h);
+	// a, b - стороны
+
+	$parameters = ['a' => null, 'h' => null];
+
+	// S = (a*h)/2
+	public function area ($parameters) {
+		$area = ($parameters['a'] * $parameters['h']) / 2;
+	}
+}
