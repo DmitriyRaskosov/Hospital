@@ -1,14 +1,20 @@
 <?php
+require_once 'abstractPolygon.php';
 
-class Polygon {
+class Polygon extends AbstractPolygon {
 
-	// многоугольников разных дохуя, представляем трапецию
-	// a, b - стороны, h - высота
+	// представляем трапецию
 
-	$parameters = ['a' => null, 'b' => null, 'h' => null];
+	public function __construct ($a, $b, $h) {
+		$this->parameters['a'] = $a;
+		$this->parameters['b'] = $b;
+		$this->parameters['h'] = $h;
+	}
 
 	// S = ((a+b)/2)*h
-	public function area ($parameters) {
+	public function area () {
+		$parameters = $this->parameters;
 		$area = (($parameters['a'] + $parameters['b']) / 2) * $parameters['h'];
+		return $area;
 	}
 }

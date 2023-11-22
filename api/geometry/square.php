@@ -1,13 +1,17 @@
 <?php
 
-class Square {
+class Square extends AbstractPolygon {
 
-	// a, b - стороны
+	// а - сторона квадрата
 
-	$parameters = ['a' => null];
+	public function __construct ($a) {
+		$this->parameters['a'] = $a;
+	}
 
 	// S = a**2
-	public function area ($parameters) {
+	public function area () {
+		$parameters = $this->parameters;
 		$area = pow($parameters['a'], 2);
+		return $area;
 	}
 }
