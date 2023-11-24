@@ -34,3 +34,5 @@ $triangle = new Triangle(2, 3);
 
 print_r($triangle);
 print_r($triangle->area()."<br>");
+
+echo $triangle->perimeter_finder();
