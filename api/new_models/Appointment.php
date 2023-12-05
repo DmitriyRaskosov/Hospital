@@ -40,11 +40,40 @@ class Appointments extends AbstractModel {
 	    return $new_appointment;
 	}
 
-	
+	public function update($object, $id = null, $date = null, $data = null)
+	{
+		$data = (array)json_decode(file_get_contents('../../data/appointments.json'), true);
+		$new_data = parent::update($this->id, $this->date, $data);
+
+		$new_data = json_encode($new_data);
+	    $new_data = file_put_contents('../../data/appointments.json', $new_data);
+	    return 'данные обновлены, новая дата записи: '.$this->date;
+	}
+
+	public function delete($object, $id = null, $data = null)
+	{
+		$data = (array)json_decode(file_get_contents('../../data/appointments.json'), true);
+		$result = parent::delete($id, $data);
+
+		$result = json_encode($result);
+	    $result = file_put_contents('../../data/appointments.json', $result);
+	}
 }
+
+	
 
 $test = new Appointments('Igor', '10-12-2021', 'therapist');
 
+//print_r($test->getOne(2));
 
-print_r($test);
-print_r($test->create($test));
+print_r($test->getAll());
+
+//print_r($test->create($test));
+
+/*
+$test->date = 102;
+print_r($test->date)."<br>";
+print_r($test->update($test));
+*/
+
+print_r($test->delete($test, 3));

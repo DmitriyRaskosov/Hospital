@@ -47,7 +47,7 @@ abstract class AbstractModel {
 				break;
 			}
 		}
-		return $updated_data;
+		return $data;
 	}
 
 	public function delete($id, $data)
@@ -58,12 +58,18 @@ abstract class AbstractModel {
 			if ($id == $value['id']) {
 				unset($data[$key]);
 				$flag_match = 1;
-				return $data;
+				echo "данные удалены";
+				break;
 			}
 		}
-		if ($flag_match == 0) {
-			$responce[] = ['result' => "Запись не найдена!"];
-			return $responce;
+		if ($flag_match != 1) {
+			exit ("искомые данные для удаления не найдены");
+		}
+		if (count($data) >= 1) {
+			return $data;
+		} elseif (count($data) < 1) {
+			echo "данных больше нет, всё удалено";
+			return $data;
 		}
 	}
 }
