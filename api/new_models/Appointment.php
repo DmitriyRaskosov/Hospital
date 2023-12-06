@@ -7,73 +7,58 @@ class Appointments extends AbstractModel {
 	public $name;
 	public $date;
 	public $doctor_type;
+	public $path = "../../data/appointments.json";
 
 	public function __construct($name, $date, $doctor_type)
 	{
 		$this->name = $name;
 		$this->date = $date;
 		$this->doctor_type = $doctor_type;
-		$this->id = parent::createId((array)json_decode(file_get_contents('../../data/appointments.json'), true));
+		$this->id = parent::createId($this->path);	
 	}
 
 
-	public static function getOne($id, $data = null)
+	public function getOne($id, $path = null)
 	{
-		$data = (array)json_decode(file_get_contents('../../data/appointments.json'), true);
-		return parent::getOne($id, $data);
+		return parent::getOne($id, $this->path);
 	}
 
-	public function getAll()
+	public function getAll($path = null)
 	{
-		$data = (array)json_decode(file_get_contents('../../data/appointments.json'), true);
-		return $data;
+		return parent::getAll($this->path);
 	}
 
-	public function create($object)
+	public function create($object, $path = null)
 	{
-	    $data = (array)json_decode(file_get_contents('../../data/appointments.json'), true);
-	    $new_appointment[] = (array) $object;
-	    $new_data = array_merge($data, $new_appointment);
-
-	    $data = json_encode($new_data);
-	    $data = file_put_contents('../../data/appointments.json', $data);
-	    return $new_appointment;
+	    return parent::create($object, $this->path);
 	}
 
-	public function update($object, $id = null, $date = null, $data = null)
+	public function update($object, $id = null, $date = null, $path = null)
 	{
-		$data = (array)json_decode(file_get_contents('../../data/appointments.json'), true);
-		$new_data = parent::update($this->id, $this->date, $data);
-
-		$new_data = json_encode($new_data);
-	    $new_data = file_put_contents('../../data/appointments.json', $new_data);
-	    return 'данные обновлены, новая дата записи: '.$this->date;
+		$new_date = parent::update($this->id, $this->date, $this->path);
+	    return 'данные обновлены, новая дата записи: '.$new_date;
 	}
 
-	public function delete($object, $id = null, $data = null)
+	public function delete($object, $id, $path = null)
 	{
-		$data = (array)json_decode(file_get_contents('../../data/appointments.json'), true);
-		$result = parent::delete($id, $data);
-
-		$result = json_encode($result);
-	    $result = file_put_contents('../../data/appointments.json', $result);
+		return parent::delete($id, $this->path);
 	}
 }
 
 	
 
 $test = new Appointments('Igor', '10-12-2021', 'therapist');
+//print_r($test);
 
 //print_r($test->getOne(2));
 
-print_r($test->getAll());
+//print_r($test->getAll());
 
 //print_r($test->create($test));
 
 /*
 $test->date = 102;
-print_r($test->date)."<br>";
 print_r($test->update($test));
 */
 
-print_r($test->delete($test, 3));
+print_r($test->delete($test, 6));

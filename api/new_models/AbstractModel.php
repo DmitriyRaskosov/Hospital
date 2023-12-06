@@ -4,8 +4,9 @@ abstract class AbstractModel {
 
 	public $id = null;
 
-	public static function getOne($id, $data)
-	{
+	public function getOne($id, $path)
+	{	
+		$data = (array)json_decode(file_get_contents($path), true);
 		$match = 0;
 		foreach ($data as $key => $value) {
 			if ($id == $value['id']) {
@@ -20,10 +21,14 @@ abstract class AbstractModel {
 		}
 	}
 
-	// метод getAll отсутствует здесь за ненадобностью - каждый потомок самостоятельно берёт все данные из нужного файла
-
-	public function createId($data)
+	public function getAll($path)
 	{
+		return ((array)json_decode(file_get_contents($path), true));
+	}
+
+	public function createId($path)
+	{
+		$data = ((array)json_decode(file_get_contents($path), true));
 		$max_num = null;
 		foreach ($data as $key => $value) {
 			if (isset($value['id'])) {
@@ -38,27 +43,40 @@ abstract class AbstractModel {
 		return $new_id;
 	}
 
+	public function create($object, $path)
+	{	
+		$data = ((array)json_decode(file_get_contents($path), true));
+	    $new_appointment[] = (array) $object;
+	    $new_data = array_merge($data, $new_appointment);
 
-	public function update($id, $date, $data)
+	    $new_data = json_encode($new_data);
+	    $new_data = file_put_contents('../../data/appointments.json', $new_data);
+	    return $new_appointment;
+	}
+
+	public function update($id, $date, $path)
 	{
+		$data = ((array)json_decode(file_get_contents($path), true));
 		foreach ($data as $key => $value) {
 			if ($id == $value['id']) {
 				$data[$key]['date'] = $date;
-				break;
+				$new_data = json_encode($data);
+	    		$new_data = file_put_contents('../../data/appointments.json', $new_data);
+				return $data[$key]['date'];
 			}
 		}
-		return $data;
 	}
 
-	public function delete($id, $data)
+	public function delete($id, $path)
 	{
 		$flag_match = 0;
+		$data = ((array)json_decode(file_get_contents($path), true));
 
 		foreach ($data as $key => $value) {
 			if ($id == $value['id']) {
 				unset($data[$key]);
 				$flag_match = 1;
-				echo "данные удалены";
+				echo "данные удалены"."<br>";
 				break;
 			}
 		}
@@ -66,10 +84,11 @@ abstract class AbstractModel {
 			exit ("искомые данные для удаления не найдены");
 		}
 		if (count($data) >= 1) {
+			$new_data = json_encode($data);
+	   		$new_data = file_put_contents('../../data/appointments.json', $new_data);
 			return $data;
 		} elseif (count($data) < 1) {
-			echo "данных больше нет, всё удалено";
-			return $data;
-		}
+			return 'данных больше нет, всё удалено';
+		}	
 	}
 }
