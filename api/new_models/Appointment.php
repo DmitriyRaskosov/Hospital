@@ -16,33 +16,6 @@ class Appointments extends AbstractModel {
 		$this->doctor_type = $doctor_type;
 		$this->id = parent::createId($this->path);	
 	}
-
-
-	public function getOne($id, $path = null)
-	{
-		return parent::getOne($id, $this->path);
-	}
-
-	public function getAll($path = null)
-	{
-		return parent::getAll($this->path);
-	}
-
-	public function create($object, $path = null)
-	{
-	    return parent::create($object, $this->path);
-	}
-
-	public function update($object, $id = null, $date = null, $path = null)
-	{
-		$new_date = parent::update($this->id, $this->date, $this->path);
-	    return 'данные обновлены, новая дата записи: '.$new_date;
-	}
-
-	public function delete($object, $id, $path = null)
-	{
-		return parent::delete($id, $this->path);
-	}
 }
 
 	

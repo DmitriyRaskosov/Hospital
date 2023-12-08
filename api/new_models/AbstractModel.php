@@ -3,9 +3,13 @@
 abstract class AbstractModel {
 
 	public $id = null;
+	// Путь до файла, в котором хранятся данные
+	public $path;
 
-	public function getOne($id, $path)
-	{	
+	public function getOne($id)
+	{
+	    // Читаем путь из параметра объекта
+        $path = $this->path;
 		$data = (array)json_decode(file_get_contents($path), true);
 		$match = 0;
 		foreach ($data as $key => $value) {
