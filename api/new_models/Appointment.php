@@ -13,7 +13,7 @@ class Appointments extends AbstractModel {
 		$this->name = $name;
 		$this->date = $date;
 		$this->doctor_type = $doctor_type;
-		$this->id = parent::createId(self::$path);	
+		$this->id = parent::createId();
 	}
 }
 
@@ -22,9 +22,9 @@ class Appointments extends AbstractModel {
 $test = new Appointments('Igor', '10-12-2021', 'therapist');
 print_r($test);
 
-//print_r($test->getOne(2));
+print_r($test->getOne(4));
 
-print_r($test->getAll());
+//print_r($test->getAll());
 
 //print_r($test->create($test));
 

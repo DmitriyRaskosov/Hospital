@@ -3,23 +3,24 @@
 abstract class AbstractModel {
 
 	public $id = null;
+
 	public static $path;
 
 	public function getOne($id)
-	{	
-		$data = (array)json_decode(file_get_contents(static::$path), true);
-		$match = 0;
-		foreach ($data as $key => $value) {
-			if ($id == $value['id']) {
-				$match = 1;
-				$responce[] = $value;
-				break;
-			}
-		}
-		if ($match == 0) {
-			throw new exception('запись не найдена!');
-		}
-		return $responce;
+	{  
+    $data = (array)json_decode(file_get_contents(static::$path), true);
+	    $match = 0;
+	    foreach ($data as $key => $value) {
+	      	if ($id == $value['id']) {
+		        $match = 1;
+		        $responce[] = $value;
+		        break;
+	      	}
+	    }
+	    if ($match == 0) {
+	      throw new exception('запись не найдена!');
+	    }
+	    return $responce;
 	}
 	
 	public function getAll()
