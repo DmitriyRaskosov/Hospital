@@ -3,32 +3,33 @@
 abstract class AbstractModel {
 
 	public $id = null;
+	public static $path;
 
-	public function getOne($id, $path)
+	public function getOne($id)
 	{	
-		$data = (array)json_decode(file_get_contents($path), true);
+		$data = (array)json_decode(file_get_contents(static::$path), true);
 		$match = 0;
 		foreach ($data as $key => $value) {
 			if ($id == $value['id']) {
 				$match = 1;
 				$responce[] = $value;
-				return $responce;
+				break;
 			}
 		}
 		if ($match == 0) {
-			$responce[] = ['result' => "Запись не найдена!"];
-			return $responce;
+			throw new exception('запись не найдена!');
 		}
+		return $responce;
+	}
+	
+	public function getAll()
+	{
+		return ((array)json_decode(file_get_contents(static::$path), true));
 	}
 
-	public function getAll($path)
+	public function createId()
 	{
-		return ((array)json_decode(file_get_contents($path), true));
-	}
-
-	public function createId($path)
-	{
-		$data = ((array)json_decode(file_get_contents($path), true));
+		$data = ((array)json_decode(file_get_contents(static::$path), true));
 		$max_num = null;
 		foreach ($data as $key => $value) {
 			if (isset($value['id'])) {
@@ -43,9 +44,9 @@ abstract class AbstractModel {
 		return $new_id;
 	}
 
-	public function create($object, $path)
+	public function create($object)
 	{	
-		$data = ((array)json_decode(file_get_contents($path), true));
+		$data = ((array)json_decode(file_get_contents(static::$path), true));
 	    $new_appointment[] = (array) $object;
 	    $new_data = array_merge($data, $new_appointment);
 
@@ -54,9 +55,9 @@ abstract class AbstractModel {
 	    return $new_appointment;
 	}
 
-	public function update($id, $date, $path)
+	public function update($id, $date)
 	{
-		$data = ((array)json_decode(file_get_contents($path), true));
+		$data = ((array)json_decode(file_get_contents(static::$path), true));
 		foreach ($data as $key => $value) {
 			if ($id == $value['id']) {
 				$data[$key]['date'] = $date;
@@ -67,10 +68,10 @@ abstract class AbstractModel {
 		}
 	}
 
-	public function delete($id, $path)
+	public function delete($id)
 	{
 		$flag_match = 0;
-		$data = ((array)json_decode(file_get_contents($path), true));
+		$data = ((array)json_decode(file_get_contents(static::$path), true));
 
 		foreach ($data as $key => $value) {
 			if ($id == $value['id']) {
