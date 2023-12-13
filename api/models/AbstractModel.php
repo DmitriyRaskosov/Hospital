@@ -52,22 +52,24 @@ abstract class AbstractModel {
 	    $new_data = array_merge($data, $new_appointment);
 
 	    $new_data = json_encode($new_data);
-	    $new_data = file_put_contents('../../data/appointments.json', $new_data);
+	    $new_data = file_put_contents(static::$path, $new_data);
 	    return $new_appointment;
 	}
 
-	public function update($id, $date)
+	public function update($id, $changed_data)
 	{
 		$data = ((array)json_decode(file_get_contents(static::$path), true));
-		foreach ($data as $key => $value) {
-			if ($id == $value['id']) {
-				$data[$key]['date'] = $date;
-				$new_data = json_encode($data);
-	    		$new_data = file_put_contents('../../data/appointments.json', $new_data);
-				return $data[$key]['date'];
-			}
-		}
-	}
+    	foreach ($data as $key => $value) {
+	    	if ($id == $value['id']) {
+		        $data[$key] = $changed_data;
+		        $result = $data[$key];
+		        $new_data = json_encode($data);
+		        $new_data = file_put_contents(static::$path, $new_data);
+	        	break;
+     		}
+    	}
+    	return $result;
+    }
 
 	public function delete($id)
 	{
@@ -87,7 +89,7 @@ abstract class AbstractModel {
 		}
 		if (count($data) >= 1) {
 			$new_data = json_encode($data);
-	   		$new_data = file_put_contents('../../data/appointments.json', $new_data);
+	   		$new_data = file_put_contents(static::$path, $new_data);
 			return $data;
 		} elseif (count($data) < 1) {
 			return 'данных больше нет, всё удалено';
