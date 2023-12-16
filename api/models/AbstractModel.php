@@ -41,8 +41,7 @@ abstract class AbstractModel {
 				$max_num = 0;
 			}	
 		}
-		$new_id = $max_num + 1;
-		return $new_id;
+        return $max_num + 1;
 	}
 
 	public function create($object)
@@ -56,18 +55,20 @@ abstract class AbstractModel {
 	    return $new_appointment;
 	}
 
-	public function update($id, $changed_data)
+	public function update($id, array $changed_data)
 	{
 		$data = ((array)json_decode(file_get_contents(static::$path), true));
-    	foreach ($data as $key => $value) {
-	    	if ($id == $value['id']) {
-		        $data[$key] = $changed_data;
-		        $result = $data[$key];
-		        $new_data = json_encode($data);
-		        $new_data = file_put_contents(static::$path, $new_data);
-	        	break;
-     		}
-    	}
+        $result = 'undefined result';
+        foreach ($data as $key => $entity) {
+            if ($entity['id'] == $id) {
+                $data[$key]['id'] = $id;
+                $data[$key] = array_merge($data[$key], $changed_data);
+                $result = $data[$key];
+                $new_data = json_encode($data);
+                $new_data = file_put_contents(static::$path, $new_data);
+                break;
+            }
+        }
     	return $result;
     }
 
@@ -77,6 +78,7 @@ abstract class AbstractModel {
 		$data = ((array)json_decode(file_get_contents(static::$path), true));
 
 		foreach ($data as $key => $value) {
+            print_r($value);
 			if ($id == $value['id']) {
 				unset($data[$key]);
 				$flag_match = 1;

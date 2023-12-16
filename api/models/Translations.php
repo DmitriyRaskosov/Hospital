@@ -10,9 +10,9 @@ class Translations extends AbstractModel {
 
 	public function __construct($en, $ru) 
 	{
+        $this->id = parent::createId();
 		$this->en = $en;
 		$this->ru = $ru;
-		$this->id = parent::createId();
 	}
 
 
@@ -20,18 +20,19 @@ class Translations extends AbstractModel {
 		Метод принимает на вход слово на русском и отдаёт это же слово на английском если перевод слова содержится в translations.json
 	*/
 	public function returnTranslation($ru)
-	{	
-		$flag = null;
-		$counter = 1;
-		$getData = parent::getAll($counter);
-		foreach ($getData as $key => $value) {
-			if ($value['ru'] !== $ru) {
-				$counter++;
-			} else {
-				$result = $value['en'];
-				break;
-			}	
+	{
+		$flag = 0;
+		$data = parent::getAll();
+		foreach ($data as $value) {
+			if ($value['ru'] == $ru) {
+                $result = $value['en'];
+                $flag = 1;
+                break;
+			}
 		}
+        if ($flag == 0) {
+            $result = 'Перевод этого слова отсутствует';
+        }
 		return $result;
 	}
 }
@@ -39,23 +40,19 @@ class Translations extends AbstractModel {
 $test = new Translations('Igorrr', 'Игорь');
 print_r($test);
 
-//print_r($test->returnTranslation('терапевт'));
-
+print_r($test->returnTranslation('терапевт'));
 //print_r($test->getOne(5));
-
 //print_r($test->getAll());
 
-//print_r($test->create($test));
-
-
+/*
+$test->create($test);
 $test->en = 'Igordasdasdsd';
 $test->ru = 'Игорь';
 $change_arr = [
 	'en' => $test->en, 
 	'ru' => $test->ru
 ];
+*/
 
-print_r($test->update(3, $change_arr));
-
-
-//print_r($test->delete($test, 6));
+//print_r($test->update(9, $change_arr));
+//print_r($test->delete(9));

@@ -11,10 +11,10 @@ class Appointments extends AbstractModel {
 
 	public function __construct($name,  $date, $doctor_type) 
 	{
+        $this->id = parent::createId();
 		$this->name = $name;
 		$this->date = $date;
 		$this->doctor_type = $doctor_type;
-		$this->id = parent::createId();
 	}
 }
 

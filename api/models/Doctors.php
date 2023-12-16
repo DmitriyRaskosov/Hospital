@@ -11,10 +11,10 @@ class Doctors extends AbstractModel {
 
 	public function __construct($name, $doctor_type, $cost)	
 	{
+        $this->id = parent::createId();
 		$this->name = $name;
 		$this->doctor_type = $doctor_type;
 		$this->cost = $cost;
-		$this->id = parent::createId();
 	}
 }
 
