@@ -27,16 +27,22 @@ class Api {
 
         if ($method == 'GET') {
             // команда контроллеру на вызов метода getAll, если $id = null
-            $result = $controller->getAll();
-            
             if ($id != null) {
                 // команда контроллеру на вызов метода getOne
                 $result = $controller->getOne($id);
+                echo json_encode($result);
+                return true;
             }
+            $result = $controller->getAll();
+            echo json_encode($result);
+            return true;
+
         }
         if ($method == 'POST') {
             // команда контроллеру на вызов метода create
             $result = $controller->create();
+            echo json_encode($result);
+            return true;
         }
         if ($method == 'PUT') {
             // команда контроллеру на вызов метода update
@@ -44,6 +50,8 @@ class Api {
                 throw new exception ('Необходимый для работы id отсутствует');
             }
             $result = $controller->update($id);
+            echo json_encode($result);
+            return true;
         }
         if ($method == 'DELETE') {
             // команда контроллеру на вызов метода delete
@@ -51,6 +59,8 @@ class Api {
                 throw new exception ('Необходимый для работы id отсутствует');
             }
             $result = $controller->delete($id);
+            echo json_encode($result);
+            return true;
         }
     }
 }
