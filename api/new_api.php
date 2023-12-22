@@ -1,49 +1,60 @@
 <?php
+require_once 'controllers/AppointmentsController.php';
+require_once 'controllers/DoctorsController.php';
+require_once 'controllers/TranslationsController.php';
 
+// преобразуем URI в массив, где данные будут начиная со второго (1) ключа.
+$uri_in_array = explode('/', $_SERVER['REQUEST_URI']);
 class Api {
 
-    public $request = [];
-    public $req_controller;
-    public $req_model_method;
+    public $request_method;
+    public $ctrl_request;
+    public $id;
     // запрос пользователя в виде массива, из которого можно будет понять, что именно пользователь хочет сделать
-    public function requestCreator()
-    {
-        $this->request['method'] = $_SERVER['REQUEST_METHOD'];
-        $uri_in_array = explode('/', $_SERVER['REQUEST_URI']);
-        $this->request['ctrl_request'] = $uri_in_array[3];
-        $this->req_controller = $uri_in_array[3];
-        if (isset($uri_in_array[4]) && $uri_in_array[4] != null) {
-            $request['id'] = $uri_in_array[4];
-        }
-        return $this->request;
-    }
 
-    // здесь вызываем контроллер и передаём ему вызов метода из модели, при необходимости передаём id и др. данные
-    public function requiredOutput($controller, $method, $id = null)
+    public function __construct($method, $request_uri, $id = null)
     {
-        require_once 'controllers/'.$controller.'.php';
+        $this->request_method = $method;
+        $this->ctrl_request = $request_uri[3];
+        if (isset($id)) {
+            $this->id = $id;
+        }
+    }
+    // здесь вызываем контроллер и передаём ему вызов метода из модели, при необходимости передаём id и др. данные
+    public function requiredOutput($req_controller, $method, $id = null)
+    {
+        $controller = new $req_controller."Controller"();
 
         if ($method == 'GET') {
             // команда контроллеру на вызов метода getAll, если $id = null
+            $result = $controller->getAll();
             
             if ($id != null) {
                 // команда контроллеру на вызов метода getOne
+                $result = $controller->getOne($id);
             }
         }
         if ($method == 'POST') {
             // команда контроллеру на вызов метода create
+            $result = $controller->create();
         }
         if ($method == 'PUT') {
             // команда контроллеру на вызов метода update
+            if (!isset($id)) {
+                throw new exception ('Необходимый для работы id отсутствует');
+            }
+            $result = $controller->update($id);
         }
         if ($method == 'DELETE') {
             // команда контроллеру на вызов метода delete
+            if (!isset($id)) {
+                throw new exception ('Необходимый для работы id отсутствует');
+            }
+            $result = $controller->delete($id);
         }
     }
 }
 
-$test = new Api;
+$test = new Api($_SERVER['REQUEST_METHOD'], $uri_in_array);
 
-print_r($test->requestCreator());
-
-print_r($test->request);
+print_r($test);
