@@ -24,23 +24,24 @@ class Api {
     public function requiredOutput($req_controller, $method, $id = null)
     {
         $controller = new $req_controller."Controller"();
+        $req_model_name = $req_controller;
 
         if ($method == 'GET') {
             // команда контроллеру на вызов метода getAll, если $id = null
             if ($id != null) {
                 // команда контроллеру на вызов метода getOne
-                $result = $controller->getOne($id);
+                $result = $controller->getOne($id, $req_model_name);
                 echo json_encode($result);
                 return true;
             }
-            $result = $controller->getAll();
+            $result = $controller->getAll($req_model_name);
             echo json_encode($result);
             return true;
 
         }
         if ($method == 'POST') {
             // команда контроллеру на вызов метода create
-            $result = $controller->create();
+            $result = $controller->create($req_model_name);
             echo json_encode($result);
             return true;
         }
@@ -49,7 +50,7 @@ class Api {
             if (!isset($id)) {
                 throw new exception ('Необходимый для работы id отсутствует');
             }
-            $result = $controller->update($id);
+            $result = $controller->update($id, $req_model_name);
             echo json_encode($result);
             return true;
         }
@@ -58,7 +59,7 @@ class Api {
             if (!isset($id)) {
                 throw new exception ('Необходимый для работы id отсутствует');
             }
-            $result = $controller->delete($id);
+            $result = $controller->delete($id, $req_model_name);
             echo json_encode($result);
             return true;
         }

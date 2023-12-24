@@ -44,7 +44,7 @@ abstract class AbstractModel {
         return $max_num + 1;
 	}
 
-	public function create($object)
+	public function create($name, $date, $doctor_type)
 	{	
 		$data = ((array)json_decode(file_get_contents(static::$path), true));
 	    $new_appointment[] = (array) $object;
