@@ -1,5 +1,5 @@
 <?php
-require_once '../models/Appointments.php';
+require_once __DIR__.'/../models/Appointments.php';
 class AppointmentsController {
 
     public function getOne ($id)
