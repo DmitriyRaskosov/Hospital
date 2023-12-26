@@ -1,5 +1,5 @@
 <?php
-
+require_once '../models/Appointments.php';
 class AppointmentsController {
 
     public function getOne ($id)
@@ -17,7 +17,7 @@ class AppointmentsController {
     public function create ()
     {
         $model = new Appointments($_POST['name'], $_POST['date'], $_POST['doctor_type']);
-        return $model->create($id);
+        return $model->create();
     }
 
     public function update ($id)

@@ -17,21 +17,3 @@ class Appointments extends AbstractModel {
 		$this->doctor_type = $doctor_type;
 	}
 }
-
-	
-
-$test = new Appointments('Igor', '10-12-2021', 'therapist');
-print_r($test);
-
-print_r($test->getOne(4));
-
-//print_r($test->getAll());
-
-//print_r($test->create($test));
-
-/*
-$test->date = 102;
-print_r($test->update($test));
-*/
-
-//print_r($test->delete($test, 6));

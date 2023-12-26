@@ -30,11 +30,11 @@ class Api {
             // команда контроллеру на вызов метода getAll, если $id = null
             if ($id != null) {
                 // команда контроллеру на вызов метода getOne
-                $result = $controller->getOne($id, $req_model_name);
+                $result = $controller->getOne($id);
                 echo json_encode($result);
                 return true;
             }
-            $result = $controller->getAll($req_model_name);
+            $result = $controller->getAll();
             echo json_encode($result);
             return true;
 
@@ -65,7 +65,8 @@ class Api {
         }
     }
 }
-
+/*
 $test = new Api($_SERVER['REQUEST_METHOD'], $uri_in_array);
 
 print_r($test);
+*/
