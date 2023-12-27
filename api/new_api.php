@@ -6,8 +6,6 @@ require_once 'models/Appointments.php';
 require_once 'models/Doctors.php';
 require_once 'models/Translations.php';
 
-// преобразуем URI в массив, где данные будут начиная со второго (1) ключа.
-$uri_in_array = explode('/', $_SERVER['REQUEST_URI']);
 class Api {
 
     public $request_method;
@@ -24,15 +22,17 @@ class Api {
         }
     }
     // здесь вызываем контроллер и передаём ему вызов метода из модели, при необходимости передаём id и др. данные
-    public function requiredOutput($object)
+    public function requiredOutput()
     {
+        // Создаем экземпляр нужного нам контроллера
+        $controller_name = $this->ctrl_request.'Controller';
+        $controller = new $controller_name;
         if ($this->request_method == 'GET') {
             // команда контроллеру на вызов метода getAll, если $id = null
             if ($this->id != null) {
                 echo 'sdasdawsd';
                 // команда контроллеру на вызов метода getOne
-                $result = new $this->ctrl_request.'Controller'();
-                $result = $this->ctrl_request::getOne($this->id);
+                $result =$controller->getOne($this->id);
                 echo json_encode($result);
                 return true;
             }
@@ -41,35 +41,39 @@ class Api {
             return true;
 
         }
-        if ($method == 'POST') {
-            // команда контроллеру на вызов метода create
-            $result = $controller->create($req_model_name);
+        // команда контроллеру на вызов метода create
+        elseif ($this->request_method == 'POST') {
+            $result = $controller->create($this->id);
             echo json_encode($result);
             return true;
         }
-        if ($method == 'PUT') {
-            // команда контроллеру на вызов метода update
+        // команда контроллеру на вызов метода update
+        elseif ($this->request_method == 'PUT') {
             if (!isset($id)) {
-                throw new exception ('Необходимый для работы id отсутствует');
+                throw new Exception('Необходимый для работы id отсутствует');
             }
-            $result = $controller->update($id, $req_model_name);
+            $result = $controller->update($this->id);
             echo json_encode($result);
             return true;
         }
-        if ($method == 'DELETE') {
-            // команда контроллеру на вызов метода delete
+        // команда контроллеру на вызов метода delete
+        elseif ($this->request_method == 'DELETE') {
             if (!isset($id)) {
-                throw new exception ('Необходимый для работы id отсутствует');
+                throw new Exception('Необходимый для работы id отсутствует');
             }
-            $result = $controller->delete($id, $req_model_name);
+            $result = $controller->delete($this->id);
             echo json_encode($result);
             return true;
         }
+        else {
+            // Обработка ошибки "неизвестный https-метод"
+        }
+        return false;
     }
 }
 
+// преобразуем URI в массив, где данные будут начиная со второго (1) ключа.
+$uri_in_array = explode('/', $_SERVER['REQUEST_URI']);
 $test = new Api($_SERVER['REQUEST_METHOD'], $uri_in_array, $uri_in_array);
-
 print_r($test);
-
 $test->requiredOutput($test);

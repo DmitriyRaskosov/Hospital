@@ -1,34 +1,38 @@
 <?php
 
+require_once __DIR__.'/../models/AbstractModel.php';
+
 abstract class AbstractController {
 
-    public function getOne ($id, $model_name)
+    public static $model_name = 'AbstractModel';
+
+    public function getOne($id)
     {
-        $model = new $model_name;
+        $model = new self::$model_name();
         return $model->getOne($id);
     }
 
-    public function getAll ($model_name)
+    public function getAll()
     {
-        $model = new $model_name;
-        return $model->getAll($id);
+        $model = new self::$model_name();
+        return $model->getAll();
     }
 
-    public function create ($model_name)
+    public function create($id)
     {
-        $model = new $model_name;
+        $model = new self::$model_name();
         return $model->create($id);
     }
 
-    public function update ($id, $model_name)
+    public function update($id)
     {
-        $model = new $model_name;
+        $model = new self::$model_name();
         return $model->update($id);
     }
 
-    public function delete ($id, $model_name)
+    public function delete($id)
     {
-        $model = new $model_name;
+        $model = new self::$model_name();
         return $model->delete($id);
     }
 }
