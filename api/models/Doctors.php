@@ -17,19 +17,3 @@ class Doctors extends AbstractModel {
 		$this->cost = $cost;
 	}
 }
-
-$test = new Doctors('Igorrr', 'therapist', '5000');
-print_r($test);
-
-print_r($test->getOne(4));
-
-//print_r($test->getAll());
-
-//print_r($test->create($test));
-
-/*
-$test->date = 102;
-print_r($test->update($test));
-*/
-
-//print_r($test->delete($test, 6));

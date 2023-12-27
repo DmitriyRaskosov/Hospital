@@ -2,6 +2,9 @@
 require_once 'controllers/AppointmentsController.php';
 require_once 'controllers/DoctorsController.php';
 require_once 'controllers/TranslationsController.php';
+require_once 'models/Appointments.php';
+require_once 'models/Doctors.php';
+require_once 'models/Translations.php';
 
 // преобразуем URI в массив, где данные будут начиная со второго (1) ключа.
 $uri_in_array = explode('/', $_SERVER['REQUEST_URI']);
@@ -17,20 +20,19 @@ class Api {
         $this->request_method = $method;
         $this->ctrl_request = $request_uri[3];
         if (isset($id)) {
-            $this->id = $id;
+            $this->id = $request_uri[4];
         }
     }
     // здесь вызываем контроллер и передаём ему вызов метода из модели, при необходимости передаём id и др. данные
-    public function requiredOutput($req_controller, $method, $id = null)
+    public function requiredOutput($object)
     {
-        $controller = new $req_controller."Controller"();
-        $req_model_name = $req_controller;
-
-        if ($method == 'GET') {
+        if ($this->request_method == 'GET') {
             // команда контроллеру на вызов метода getAll, если $id = null
-            if ($id != null) {
+            if ($this->id != null) {
+                echo 'sdasdawsd';
                 // команда контроллеру на вызов метода getOne
-                $result = $controller->getOne($id);
+                $result = new $this->ctrl_request.'Controller'();
+                $result = $this->ctrl_request::getOne($this->id);
                 echo json_encode($result);
                 return true;
             }
@@ -65,8 +67,9 @@ class Api {
         }
     }
 }
-/*
-$test = new Api($_SERVER['REQUEST_METHOD'], $uri_in_array);
+
+$test = new Api($_SERVER['REQUEST_METHOD'], $uri_in_array, $uri_in_array);
 
 print_r($test);
-*/
+
+$test->requiredOutput($test);

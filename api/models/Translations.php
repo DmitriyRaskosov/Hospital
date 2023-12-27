@@ -36,23 +36,3 @@ class Translations extends AbstractModel {
 		return $result;
 	}
 }
-
-$test = new Translations('Igorrr', 'Игорь');
-print_r($test);
-
-print_r($test->returnTranslation('терапевт'));
-//print_r($test->getOne(5));
-//print_r($test->getAll());
-
-/*
-$test->create($test);
-$test->en = 'Igordasdasdsd';
-$test->ru = 'Игорь';
-$change_arr = [
-	'en' => $test->en, 
-	'ru' => $test->ru
-];
-*/
-
-//print_r($test->update(9, $change_arr));
-//print_r($test->delete(9));
