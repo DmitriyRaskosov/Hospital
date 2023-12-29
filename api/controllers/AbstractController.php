@@ -8,31 +8,31 @@ abstract class AbstractController {
 
     public function getOne($id)
     {
-        $model = new self::$model_name();
-        return $model->getOne($id);
+        $model_name = self::$model_name;
+        return $model_name::getOne();
     }
 
     public function getAll()
     {
-        $model = new self::$model_name();
-        return $model->getAll();
+        $model_name = self::$model_name;
+        return $model_name::getAll();
     }
 
     public function create($id)
     {
-        $model = new self::$model_name();
-        return $model->create($id);
+
+        return $model_name::create($id);
     }
 
     public function update($id)
     {
-        $model = new self::$model_name();
-        return $model->update($id);
+
+        return $model_name::update($id);
     }
 
     public function delete($id)
     {
-        $model = new self::$model_name();
-        return $model->delete($id);
+
+        return $model_name::delete($id);
     }
 }
