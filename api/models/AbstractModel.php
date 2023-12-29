@@ -6,7 +6,7 @@ abstract class AbstractModel {
 
 	public static $path;
 
-	public function getOne($id)
+	public static function getOne($id)
 	{  
     $data = (array)json_decode(file_get_contents(static::$path), true);
 	    $match = 0;
@@ -23,12 +23,12 @@ abstract class AbstractModel {
 	    return $responce;
 	}
 	
-	public function getAll()
+	public static function getAll()
 	{
 		return ((array)json_decode(file_get_contents(static::$path), true));
 	}
 
-	public function createId()
+	public static function createId()
 	{
 		$data = ((array)json_decode(file_get_contents(static::$path), true));
 		$max_num = null;
@@ -44,7 +44,7 @@ abstract class AbstractModel {
         return $max_num + 1;
 	}
 
-	public function create($name, $date, $doctor_type)
+	public static function create($name, $date, $doctor_type)
 	{	
 		$data = ((array)json_decode(file_get_contents(static::$path), true));
 	    $new_appointment[] = (array) $object;
@@ -55,7 +55,7 @@ abstract class AbstractModel {
 	    return $new_appointment;
 	}
 
-	public function update($id, array $changed_data)
+	public static function update($id, array $changed_data)
 	{
 		$data = ((array)json_decode(file_get_contents(static::$path), true));
         $result = 'undefined result';
@@ -72,7 +72,7 @@ abstract class AbstractModel {
     	return $result;
     }
 
-	public function delete($id)
+	public static function delete($id)
 	{
 		$flag_match = 0;
 		$data = ((array)json_decode(file_get_contents(static::$path), true));

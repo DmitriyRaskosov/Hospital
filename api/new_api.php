@@ -32,7 +32,7 @@ class Api {
             if ($this->id != null) {
                 echo 'sdasdawsd';
                 // команда контроллеру на вызов метода getOne
-                $result =$controller->getOne($this->id);
+                $result = $controller->getOne($this->id);
                 echo json_encode($result);
                 return true;
             }

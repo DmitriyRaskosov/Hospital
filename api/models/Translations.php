@@ -8,18 +8,10 @@ class Translations extends AbstractModel {
 	public $ru;
 	public static $path = "../../data/translations.json";
 
-	public function __construct($en, $ru) 
-	{
-        $this->id = parent::createId();
-		$this->en = $en;
-		$this->ru = $ru;
-	}
-
-
 	/*
 		Метод принимает на вход слово на русском и отдаёт это же слово на английском если перевод слова содержится в translations.json
 	*/
-	public function returnTranslation($ru)
+	public static function returnTranslation($ru)
 	{
 		$flag = 0;
 		$data = parent::getAll();
