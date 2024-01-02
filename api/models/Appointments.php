@@ -7,6 +7,6 @@ class Appointments extends AbstractModel {
 	public $name;
 	public $date;
 	public $doctor_type;
-	public static $path = "../../data/appointments.json";
+	public static $path = __DIR__."/../../data/appointments.json";
 
 }

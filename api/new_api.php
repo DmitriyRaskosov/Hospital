@@ -43,22 +43,20 @@ class Api {
         }
         // команда контроллеру на вызов метода create
         elseif ($this->request_method == 'POST') {
-            $result = $controller->create($this->id);
+            $post = $_POST;
+            $result = $controller->create($post);
             echo json_encode($result);
             return true;
         }
         // команда контроллеру на вызов метода update
         elseif ($this->request_method == 'PUT') {
-            if (!isset($id)) {
-                throw new Exception('Необходимый для работы id отсутствует');
-            }
-            $result = $controller->update($this->id);
+            $result = $controller->update($this->id, $post);
             echo json_encode($result);
             return true;
         }
         // команда контроллеру на вызов метода delete
         elseif ($this->request_method == 'DELETE') {
-            if (!isset($id)) {
+            if (!isset($this->id)) {
                 throw new Exception('Необходимый для работы id отсутствует');
             }
             $result = $controller->delete($this->id);

@@ -28,26 +28,22 @@ abstract class AbstractModel {
 		return ((array)json_decode(file_get_contents(static::$path), true));
 	}
 
-	public static function createId()
+	public static function create($post)
 	{
 		$data = ((array)json_decode(file_get_contents(static::$path), true));
-		$max_num = null;
-		foreach ($data as $key => $value) {
-			if (isset($value['id'])) {
-				if ($max_num < $value['id']) {
-					$max_num = $value['id'];
-				}
-			} else {
-				$max_num = 0;
-			}	
-		}
-        return $max_num + 1;
-	}
-
-	public static function create($name, $date, $doctor_type)
-	{	
-		$data = ((array)json_decode(file_get_contents(static::$path), true));
-	    $new_appointment[] = (array) $object;
+        $max_id = null;
+        foreach ($data as $key => $value) {
+            if (isset($value['id'])) {
+                if ($max_id < $value['id']) {
+                    $max_id = $value['id'];
+                }
+            } else {
+                $max_id = 0;
+            }
+        }
+        $new_id = $max_id + 1;
+        $post['id'] = $new_id;
+	    $new_appointment[] = (array) $post;
 	    $new_data = array_merge($data, $new_appointment);
 
 	    $new_data = json_encode($new_data);
@@ -55,12 +51,13 @@ abstract class AbstractModel {
 	    return $new_appointment;
 	}
 
-	public static function update($id, array $changed_data)
+	public static function update($id, $changed_data)
 	{
 		$data = ((array)json_decode(file_get_contents(static::$path), true));
         $result = 'undefined result';
         foreach ($data as $key => $entity) {
             if ($entity['id'] == $id) {
+                print_r($changed_data);
                 $data[$key]['id'] = $id;
                 $data[$key] = array_merge($data[$key], $changed_data);
                 $result = $data[$key];
@@ -76,13 +73,14 @@ abstract class AbstractModel {
 	{
 		$flag_match = 0;
 		$data = ((array)json_decode(file_get_contents(static::$path), true));
-
 		foreach ($data as $key => $value) {
-            print_r($value);
+            print_r($data);
+
 			if ($id == $value['id']) {
 				unset($data[$key]);
 				$flag_match = 1;
 				echo "данные удалены"."<br>";
+                print_r($data);
 				break;
 			}
 		}
@@ -90,7 +88,9 @@ abstract class AbstractModel {
 			exit ("искомые данные для удаления не найдены");
 		}
 		if (count($data) >= 1) {
-			$new_data = json_encode($data);
+            $new_data = [];
+			$new_data[] = json_encode($data);
+            print_r($new_data);
 	   		$new_data = file_put_contents(static::$path, $new_data);
 			return $data;
 		} elseif (count($data) < 1) {
