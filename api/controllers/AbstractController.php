@@ -9,7 +9,7 @@ abstract class AbstractController {
     public function getOne($id)
     {
         $model_name = static::$model_name;
-        return $model_name::getOne();
+        return $model_name::getOne($id);
     }
 
     public function getAll()
@@ -24,10 +24,10 @@ abstract class AbstractController {
         return $model_name::create($post);
     }
 
-    public function update($id)
+    public function update($id, $changed_data)
     {
         $model_name = static::$model_name;
-        return $model_name::update($id, $_POST);
+        return $model_name::update($id, $changed_data);
     }
 
     public function delete($id)

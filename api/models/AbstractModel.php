@@ -7,7 +7,7 @@ abstract class AbstractModel {
 	public static $path;
 
 	public static function getOne($id)
-	{  
+	{
     $data = (array)json_decode(file_get_contents(static::$path), true);
 	    $match = 0;
 	    foreach ($data as $key => $value) {
@@ -31,6 +31,7 @@ abstract class AbstractModel {
 	public static function create($post)
 	{
 		$data = ((array)json_decode(file_get_contents(static::$path), true));
+        print_r($data);
         $max_id = null;
         foreach ($data as $key => $value) {
             if (isset($value['id'])) {
@@ -55,6 +56,7 @@ abstract class AbstractModel {
 	{
 		$data = ((array)json_decode(file_get_contents(static::$path), true));
         $result = 'undefined result';
+        print_r($data);
         foreach ($data as $key => $entity) {
             if ($entity['id'] == $id) {
                 print_r($changed_data);
@@ -89,7 +91,7 @@ abstract class AbstractModel {
 		}
 		if (count($data) >= 1) {
             $new_data = [];
-			$new_data[] = json_encode($data);
+			$new_data[] = json_encode(array_values($data));
             print_r($new_data);
 	   		$new_data = file_put_contents(static::$path, $new_data);
 			return $data;

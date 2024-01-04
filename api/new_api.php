@@ -30,7 +30,6 @@ class Api {
         if ($this->request_method == 'GET') {
             // команда контроллеру на вызов метода getAll, если $id = null
             if ($this->id != null) {
-                echo 'sdasdawsd';
                 // команда контроллеру на вызов метода getOne
                 $result = $controller->getOne($this->id);
                 echo json_encode($result);
@@ -50,7 +49,9 @@ class Api {
         }
         // команда контроллеру на вызов метода update
         elseif ($this->request_method == 'PUT') {
-            $result = $controller->update($this->id, $post);
+            $input_put = (array)json_decode(file_get_contents("php://input"), true);
+            $changed_data[] = $input_put[0]['param1'];
+            $result = $controller->update($this->id, $changed_data);
             echo json_encode($result);
             return true;
         }
