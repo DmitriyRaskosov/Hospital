@@ -50,7 +50,7 @@ class Api {
         // команда контроллеру на вызов метода update
         elseif ($this->request_method == 'PUT') {
             $input_put = (array)json_decode(file_get_contents("php://input"), true);
-            $changed_data[] = $input_put[0]['param1'];
+            $changed_data = $input_put[0];
             $result = $controller->update($this->id, $changed_data);
             echo json_encode($result);
             return true;

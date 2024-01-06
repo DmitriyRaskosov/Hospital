@@ -56,11 +56,10 @@ abstract class AbstractModel {
 	{
 		$data = ((array)json_decode(file_get_contents(static::$path), true));
         $result = 'undefined result';
-        print_r($data);
         foreach ($data as $key => $entity) {
             if ($entity['id'] == $id) {
-                print_r($changed_data);
                 $data[$key]['id'] = $id;
+                print_r($data[$key]);
                 $data[$key] = array_merge($data[$key], $changed_data);
                 $result = $data[$key];
                 $new_data = json_encode($data);
