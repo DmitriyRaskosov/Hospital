@@ -75,8 +75,6 @@ abstract class AbstractModel {
 		$flag_match = 0;
 		$data = ((array)json_decode(file_get_contents(static::$path), true));
 		foreach ($data as $key => $value) {
-            print_r($data);
-
 			if ($id == $value['id']) {
 				unset($data[$key]);
 				$flag_match = 1;
@@ -91,7 +89,6 @@ abstract class AbstractModel {
 		if (count($data) >= 1) {
             $new_data = [];
 			$new_data[] = json_encode(array_values($data));
-            print_r($new_data);
 	   		$new_data = file_put_contents(static::$path, $new_data);
 			return $data;
 		} elseif (count($data) < 1) {

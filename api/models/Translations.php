@@ -6,10 +6,11 @@ class Translations extends AbstractModel {
 
 	public $en;
 	public $ru;
-	public static $path = "../../data/translations.json";
+	public static $path = __DIR__."/../../data/translations.json";
 
 	/*
-		Метод принимает на вход слово на русском и отдаёт это же слово на английском если перевод слова содержится в translations.json
+		Метод принимает на вход слово на русском и отдаёт это же слово на английском если перевод слова
+	содержится в translations.json. Пока что нигде не используется и будет нуждаться в обновлении кода.
 	*/
 	public static function returnTranslation($ru)
 	{
