@@ -7,6 +7,6 @@ class Doctors extends AbstractModel {
 	public $name;
 	public $doctor_type;
 	public $cost;
-	public static $path = "../../data/doctors.json";
+	public static $path = __DIR__."/../../data/doctors.json";
 
 }
