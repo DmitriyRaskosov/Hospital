@@ -1,18 +1,18 @@
 <?php
 
-foreach ($input as $input_key => $input_value) {
-			foreach ($input_value as $one_key => $one_value) {
-
-				$output[$input_key][$one_key] = $one_value;
-
-				if ($one_key !== 'id') {
-					foreach ($translations as $tr_arr_key => $tr_arr_value) { 
-						foreach ($tr_arr_value as $tr_key => $tr_value) {
-							if ($one_value == $tr_value) {
-								$output[$input_key][$one_key.'_ru'] = $tr_arr_value['ru'];
-							}
-						}
-	 				}
-				}
-			}
-		}
+trait Translator
+{
+    public static function getTranslation($ru)
+    {
+        echo 'работаю';
+        $all_data = (array)json_decode(file_get_contents(__DIR__.'/../data/translations.json'), true);
+        $result = 'Перевод этого слова отсутствует';
+        foreach ($all_data as $value) {
+            if ($value['ru'] == $ru) {
+                $result = $value['en'];
+                break;
+            }
+        }
+        return $result;
+    }
+}
