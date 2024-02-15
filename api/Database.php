@@ -6,13 +6,13 @@ class Database {
 
     public function __construct()
     {
-        $dbconn = pg_connect()
-        or die('Не удалось соединиться: '.pg_last_error());
+        $dbconn = pg_connect('host=localhost dbname=durka user=Dmitriy password=25631940')
+        or throw new exception('Не удалось соединиться: '.pg_last_error());
     }
 
-    public function query($query): array
+    public function query($query):
     {
-        $result = pg_query($query) or die('Ошибка запроса: '.pg_last_error());
-        return $result;
+        $result = pg_query($query) or throw new exception('Ошибка запроса: '.pg_last_error());
+        return pg_fetch_assoc($result);
     }
 }
