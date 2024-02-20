@@ -77,5 +77,7 @@ $uri_in_array = explode('/', $_SERVER['REQUEST_URI']);
 $test = new Api($_SERVER['REQUEST_METHOD'], $uri_in_array, $uri_in_array);
 print_r($test);
 $test->requiredOutput($test);
+/*
 $translation = $test->getTranslation('педиатр');
 print_r($translation);
+*/

@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'/../../Database.php';
+
 abstract class AbstractModel {
 
 	public $id = null;
@@ -8,7 +10,9 @@ abstract class AbstractModel {
 
 	public static function getOne($id)
 	{
-    $data = (array)json_decode(file_get_contents(static::$path), true);
+    $db_data = new Database();
+    $data = $db_data->query('SELECT * FROM Patients');
+    print_r($data);
 	    $match = 0;
 	    foreach ($data as $key => $value) {
 	      	if ($id == $value['id']) {
