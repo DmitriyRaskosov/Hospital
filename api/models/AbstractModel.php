@@ -10,50 +10,23 @@ abstract class AbstractModel {
 
 	public static function getOne($id)
 	{
-    $db_data = new Database();
-    $data = $db_data->query('SELECT * FROM Patients');
-    print_r($data);
-	    $match = 0;
-	    foreach ($data as $key => $value) {
-	      	if ($id == $value['id']) {
-		        $match = 1;
-		        $responce[] = $value;
-		        break;
-	      	}
-	    }
-	    if ($match == 0) {
-	      throw new exception('запись не найдена!');
-	    }
-	    return $responce;
+	    $db_data = new Database();
+	    $data = $db_data->query('SELECT * FROM Patients WHERE id='.$id);
+	    return $data;
 	}
 	
 	public static function getAll()
 	{
-		return ((array)json_decode(file_get_contents(static::$path), true));
+		$db_data = new Database();
+		$data = $db_data->query('SELECT * FROM Patients');
+		return $data;
 	}
 
 	public static function create($post)
 	{
-		$data = ((array)json_decode(file_get_contents(static::$path), true));
-        print_r($data);
-        $max_id = null;
-        foreach ($data as $key => $value) {
-            if (isset($value['id'])) {
-                if ($max_id < $value['id']) {
-                    $max_id = $value['id'];
-                }
-            } else {
-                $max_id = 0;
-            }
-        }
-        $new_id = $max_id + 1;
-        $post['id'] = $new_id;
-	    $new_appointment[] = (array) $post;
-	    $new_data = array_merge($data, $new_appointment);
-
-	    $new_data = json_encode($new_data);
-	    $new_data = file_put_contents(static::$path, $new_data);
-	    return $new_appointment;
+		$db_data = new Database();
+		$data = $db_data->query('INSERT INTO Patients (first_name, last_name) VALUES'." ("."'".$post['first_name']."'".","."'".$post['last_name']."'".")");
+        return $data;
 	}
 
 	public static function update($id, $changed_data)
