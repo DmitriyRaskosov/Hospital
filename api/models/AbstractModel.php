@@ -29,47 +29,20 @@ abstract class AbstractModel {
         return $data;
 	}
 
-	public static function update($id, $changed_data)
+	public static function update($changed_data)
 	{
-		$data = ((array)json_decode(file_get_contents(static::$path), true));
-        $result = 'undefined result';
-        foreach ($data as $key => $entity) {
-            if ($entity['id'] == $id) {
-                $data[$key]['id'] = $id;
-                print_r($data[$key]);
-                $data[$key] = array_merge($data[$key], $changed_data);
-                $result = $data[$key];
-                $new_data = json_encode($data);
-                $new_data = file_put_contents(static::$path, $new_data);
-                break;
-            }
-        }
-    	return $result;
+		$db_data = new Database();
+        $data = $db_data->query('UPDATE Patients SET last_name = '."'".$changed_data['new_last_name']."'"." ".'WHERE '.'last_name = '."'".$changed_data['last_name']."'");
+    	return $data;
     }
 
-	public static function delete($id)
+	public static function delete($patient)
 	{
-		$flag_match = 0;
-		$data = ((array)json_decode(file_get_contents(static::$path), true));
-		foreach ($data as $key => $value) {
-			if ($id == $value['id']) {
-				unset($data[$key]);
-				$flag_match = 1;
-				echo "данные удалены"."<br>";
-                print_r($data);
-				break;
-			}
-		}
-		if ($flag_match != 1) {
-			exit ("искомые данные для удаления не найдены");
-		}
-		if (count($data) >= 1) {
-            $new_data = [];
-			$new_data[] = json_encode(array_values($data));
-	   		$new_data = file_put_contents(static::$path, $new_data);
-			return $data;
-		} elseif (count($data) < 1) {
-			return 'данных больше нет, всё удалено';
-		}	
+		$db_data = new Database();
+		$id = $db_data->query('SELECT id FROM Patients WHERE last_name = '."'".$patient['last_name']."'");
+		$id = $id[0]['id'];
+		$result = $db_data->query('DELETE FROM Appointments WHERE patient_id = '.$id[0]);
+		$result = $db_data->query('DELETE FROM Patients WHERE id = '.$id[0]);
+		return $result;
 	}
 }

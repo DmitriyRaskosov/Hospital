@@ -58,10 +58,9 @@ class Api {
         }
         // команда контроллеру на вызов метода delete
         elseif ($this->request_method == 'DELETE') {
-            if (!isset($this->id)) {
-                throw new Exception('Необходимый для работы id отсутствует');
-            }
-            $result = $controller->delete($this->id);
+            $input_put = (array)json_decode(file_get_contents("php://input"), true);
+            $changed_data = $input_put[0];
+            $result = $controller->delete($changed_data);
             echo json_encode($result);
             return true;
         }
