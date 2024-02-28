@@ -29,20 +29,20 @@ abstract class AbstractModel {
         return $data;
 	}
 
-	public static function update($changed_data)
+	public static function update($id, $changed_data)
 	{
 		$db_data = new Database();
-        $data = $db_data->query('UPDATE Patients SET last_name = '."'".$changed_data['new_last_name']."'"." ".'WHERE '.'last_name = '."'".$changed_data['last_name']."'");
+        $data = $db_data->query('UPDATE Patients SET '.array_key_first($changed_data)." = "."'".current($changed_data)."'"." ".'WHERE id = '.$id);
     	return $data;
     }
 
-	public static function delete($patient)
+	public static function delete($id)
 	{
 		$db_data = new Database();
-		$id = $db_data->query('SELECT id FROM Patients WHERE last_name = '."'".$patient['last_name']."'");
-		$id = $id[0]['id'];
-		$result = $db_data->query('DELETE FROM Appointments WHERE patient_id = '.$id[0]);
-		$result = $db_data->query('DELETE FROM Patients WHERE id = '.$id[0]);
+
+		$result = $db_data->query('DELETE FROM Appointments WHERE patient_id = '.$id);
+		$result = $db_data->query('DELETE FROM Patients WHERE id = '.$id);
+
 		return $result;
 	}
 }

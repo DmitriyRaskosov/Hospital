@@ -50,6 +50,9 @@ class Api {
         }
         // команда контроллеру на вызов метода update
         elseif ($this->request_method == 'PUT') {
+            if (!isset($this->id)) {
+                throw new Exception('Необходимый для работы id отсутствует');
+            }
             $input_put = (array)json_decode(file_get_contents("php://input"), true);
             $changed_data = $input_put[0];
             $result = $controller->update($this->id, $changed_data);
@@ -58,9 +61,11 @@ class Api {
         }
         // команда контроллеру на вызов метода delete
         elseif ($this->request_method == 'DELETE') {
+            if (!isset($this->id)) {
+                throw new Exception('Необходимый для работы id отсутствует');
+            }
             $input_put = (array)json_decode(file_get_contents("php://input"), true);
-            $changed_data = $input_put[0];
-            $result = $controller->delete($changed_data);
+            $result = $controller->delete($this->id);
             echo json_encode($result);
             return true;
         }
