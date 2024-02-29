@@ -35,7 +35,11 @@ abstract class AbstractModel {
 	{
 		$db_data = new Database();
 		print_r($changed_data);
-        echo('UPDATE Patients SET '.array_key_first($changed_data)." = "."'".current($changed_data)."'"." ".'WHERE id = '.$id);
+		foreach ($changed_data as $key => $value) {
+			if (array_key_exists($key, static::$attributes) != false) {
+				$data = $db_data->query('UPDATE '.static::$table_name.' SET '.$key." = "."'".$value."'"." ".'WHERE id = '.$id)."<br>";
+			}
+		}
     	return $data;
     }
 
@@ -44,7 +48,7 @@ abstract class AbstractModel {
 		$db_data = new Database();
 
 		$result = $db_data->query('DELETE FROM Appointments WHERE patient_id = '.$id);
-		$result = $db_data->query('DELETE FROM Patients WHERE id = '.$id);
+		$result = $db_data->query('DELETE FROM '.static::$table_name.' WHERE id = '.$id);
 
 		return $result;
 	}
