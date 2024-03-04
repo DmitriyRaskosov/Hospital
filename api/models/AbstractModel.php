@@ -44,13 +44,14 @@ abstract class AbstractModel {
 
 	public static function update($id, $changed_data)
 	{
-		echo self::validation($changed_data);
-		$db_data = new Database();
-		print_r($changed_data);
-		foreach ($changed_data as $key => $value) {
-			$data = $db_data->query('UPDATE '.static::$table_name.' SET '.$key." = "."'".$value."'"." ".'WHERE id = '.$id)."<br>";
-		}
-    	return $data;
+	    echo self::validation($changed_data);
+	    $db_data = new Database();
+	    $arr_attributes = [];
+	    foreach ($changed_data as $key => $value) {
+	    	$arr_attributes[] = $key." = "."'".$value."'";
+	    }
+	    $data = $db_data->query('UPDATE '.static::$table_name.' SET '.implode(", ", $arr_attributes)." ".'WHERE id = '.$id);
+	    return $data;
     }
 
 	public static function delete($id)
