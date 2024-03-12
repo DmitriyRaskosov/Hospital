@@ -16,37 +16,33 @@ abstract class AbstractModel {
 		return true;
 	}
 
-	public static function getOne($id)
+	public static function getOne($id, $db_data)
 	{
-	    $db_data = new Database();
 	    $data = $db_data->query('SELECT * FROM '.static::$table_name.' WHERE id='.$id);
 	    return $data;
 	}
 	
-	public static function getAll()
+	public static function getAll($db_data)
 	{
-		$db_data = new Database();
 		$data = $db_data->query('SELECT * FROM '.static::$table_name);
 		return $data;
 	}
 
-	public static function create($post)
+	public static function create($post, $db_data)
 	{
 		self::validation($post);
 		foreach ($post as $key => $value){
 		    $post[$key] = "'".$value."'";
 		}
 		print_r($post);
-		$db_data = new Database();
 		$data = $db_data->query('INSERT INTO '.static::$table_name." (".implode(", ",array_keys($post)).") ".'VALUES'." (".implode(", ", $post).")");
         return $data;
 	}
 
-	public static function update($id, $changed_data)
+	public static function update($id, $changed_data, $db_data)
 	{
 	    self::validation($changed_data);
-	    if (self::getOne($id)) {
-	    	$db_data = new Database();
+	    if (self::getOne($id, $db_data)) {
 		    $arr_attributes = [];
 		    foreach ($changed_data as $key => $value) {
 		    	$arr_attributes[] = $key." = "."'".$value."'";
@@ -56,13 +52,12 @@ abstract class AbstractModel {
 	    }
     }
 
-	public static function delete($id)
+	public static function delete($id, $db_data)
 	{	
-		$db_data = new Database();
 		if (static::$table_name = 'Patients') {
 			$result = $db_data->query('DELETE FROM Appointments WHERE patient_id = '.$id);
 		}
-		if (self::getOne($id)) {
+		if (self::getOne($id, $db_data)) {
 			$result = $db_data->query('DELETE FROM '.static::$table_name.' WHERE id = '.$id);
 			return $result;
 		}
