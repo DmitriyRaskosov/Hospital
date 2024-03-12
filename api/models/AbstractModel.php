@@ -10,10 +10,10 @@ abstract class AbstractModel {
 	{
 		foreach ($array as $key => $value) {
 			if (!array_key_exists($key, static::$attributes)) {
-				throw new Exception ("Ошибка в написании");
+				throw new Exception ("Ошибка в написании ".$key);
 			}
 		}
-		return 'the attributes are valid';
+		return true;
 	}
 
 	public static function getOne($id)
@@ -32,7 +32,7 @@ abstract class AbstractModel {
 
 	public static function create($post)
 	{
-		echo self::validation($post);
+		self::validation($post);
 		foreach ($post as $key => $value){
 		    $post[$key] = "'".$value."'";
 		}
@@ -44,24 +44,27 @@ abstract class AbstractModel {
 
 	public static function update($id, $changed_data)
 	{
-	    echo self::validation($changed_data);
-	    $db_data = new Database();
-	    $arr_attributes = [];
-	    foreach ($changed_data as $key => $value) {
-	    	$arr_attributes[] = $key." = "."'".$value."'";
+	    self::validation($changed_data);
+	    if (self::getOne($id)) {
+	    	$db_data = new Database();
+		    $arr_attributes = [];
+		    foreach ($changed_data as $key => $value) {
+		    	$arr_attributes[] = $key." = "."'".$value."'";
+		    }
+		    $data = $db_data->query('UPDATE '.static::$table_name.' SET '.implode(", ", $arr_attributes)." ".'WHERE id = '.$id);
+	    	return $data;
 	    }
-	    $data = $db_data->query('UPDATE '.static::$table_name.' SET '.implode(", ", $arr_attributes)." ".'WHERE id = '.$id);
-	    return $data;
     }
 
 	public static function delete($id)
-	{
+	{	
 		$db_data = new Database();
 		if (static::$table_name = 'Patients') {
 			$result = $db_data->query('DELETE FROM Appointments WHERE patient_id = '.$id);
 		}
-		$result = $db_data->query('DELETE FROM '.static::$table_name.' WHERE id = '.$id);
-
-		return $result;
+		if (self::getOne($id)) {
+			$result = $db_data->query('DELETE FROM '.static::$table_name.' WHERE id = '.$id);
+			return $result;
+		}
 	}
 }
