@@ -21,15 +21,14 @@ class Api {
         if (isset($id)) {
             $this->id = $request_uri[4];
         }
-        $this->connect = Database::getConnect();
     }
 
     // попытка в singleton
     public static function getInstance($uri_in_array) {
         if (self::$instance === null) {
             self::$instance = new self($_SERVER['REQUEST_METHOD'], $uri_in_array, $uri_in_array);
-            return self::$instance;
         }
+        return self::$instance;
     }
 
     // здесь вызываем контроллер и передаём ему вызов метода из модели, при необходимости передаём id и др. данные

@@ -17,11 +17,11 @@ class Database {
     public static function getConnect() {
         if (self::$dbconn === null) {
             self::$dbconn = new self();
-            return self::$dbconn;
         }
+        return self::$dbconn;
     }
 
-    public static function query($query)
+    public function query($query)
     {
         $query_result = pg_query(self::$dbconn->connect, $query) or throw new exception('Ошибка запроса: '.pg_last_error());
         while ($temp_result = pg_fetch_assoc($query_result)) {
