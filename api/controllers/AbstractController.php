@@ -6,33 +6,33 @@ abstract class AbstractController {
 
     public static $model_name = 'AbstractModel';
 
-    public function getOne($id, $db_data)
+    public function getOne($id)
     {
         $model_name = static::$model_name;
-        return $model_name::getOne($id, $db_data);
+        return $model_name::getOne($id);
     }
 
-    public function getAll($db_data)
+    public function getAll()
     {
         $model_name = static::$model_name;
-        return $model_name::getAll($db_data);
+        return $model_name::getAll();
     }
 
-    public function create($post, $db_data)
+    public function create($post)
     {
         $model_name = static::$model_name;
-        return $model_name::create($post, $db_data);
+        return $model_name::create($post);
     }
 
-    public function update($id, $changed_data, $db_data)
+    public function update($id, $changed_data)
     {
         $model_name = static::$model_name;
-        return $model_name::update($id, $changed_data, $db_data);
+        return $model_name::update($id, $changed_data);
     }
 
-    public function delete($id, $db_data)
+    public function delete($id)
     {
         $model_name = static::$model_name;
-        return $model_name::delete($id, $db_data);
+        return $model_name::delete($id);
     }
 }

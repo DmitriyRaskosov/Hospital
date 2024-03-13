@@ -21,7 +21,7 @@ class Api {
         if (isset($id)) {
             $this->id = $request_uri[4];
         }
-        $this->db_data = new Database();
+        $this->connect = Database::getConnect();
     }
 
     // попытка в singleton
@@ -42,11 +42,11 @@ class Api {
             // команда контроллеру на вызов метода getAll, если $id = null
             if (self::$instance->id != null) {
                 // команда контроллеру на вызов метода getOne
-                $result = $controller->getOne(self::$instance->id, self::$instance->db_data);
+                $result = $controller->getOne(self::$instance->id);
                 echo json_encode($result);
                 return true;
             }
-            $result = $controller->getAll(self::$instance->db_data);
+            $result = $controller->getAll();
             echo json_encode($result);
             return true;
 
@@ -54,7 +54,7 @@ class Api {
         // команда контроллеру на вызов метода create
         elseif (self::$instance->request_method == 'POST') {
             $post = $_POST;
-            $result = $controller->create($post, self::$instance->db_data);
+            $result = $controller->create($post);
             echo json_encode($result);
             return true;
         }
@@ -65,7 +65,7 @@ class Api {
             }
             $input_put = (array)json_decode(file_get_contents("php://input"), true);
             $changed_data = $input_put[0];
-            $result = $controller->update(self::$instance->id, $changed_data, self::$instance->db_data);
+            $result = $controller->update(self::$instance->id, $changed_data);
             echo json_encode($result);
             return true;
         }
@@ -75,7 +75,7 @@ class Api {
                 throw new Exception('Необходимый для работы id отсутствует');
             }
             $input_put = (array)json_decode(file_get_contents("php://input"), true);
-            $result = $controller->delete(self::$instance->id, self::$instance->db_data);
+            $result = $controller->delete(self::$instance->id);
             echo json_encode($result);
             return true;
         }
