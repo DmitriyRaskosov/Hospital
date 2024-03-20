@@ -2,9 +2,11 @@
 require_once 'controllers/AppointmentsController.php';
 require_once 'controllers/DoctorsController.php';
 require_once 'controllers/TranslationsController.php';
+require_once 'controllers/PatientsController.php';
 require_once 'models/Appointments.php';
 require_once 'models/Doctors.php';
 require_once 'models/Translations.php';
+require_once 'models/Patients.php';
 require_once 'Translator.php';
 require_once __DIR__.'/../Database.php';
 
@@ -18,7 +20,7 @@ class Api {
     {
         $this->request_method = $method;
         $this->ctrl_request = $request_uri[3];
-        if (isset($id)) {
+        if (isset($request_uri[4])) {
             $this->id = $request_uri[4];
         }
     }
@@ -39,7 +41,7 @@ class Api {
         $controller = new $controller_name;
         if (self::$instance->request_method == 'GET') {
             // команда контроллеру на вызов метода getAll, если $id = null
-            if (self::$instance->id != null) {
+            if (isset(self::$instance->id) AND self::$instance->id != null) {
                 // команда контроллеру на вызов метода getOne
                 $result = $controller->getOne(self::$instance->id);
                 echo json_encode($result);

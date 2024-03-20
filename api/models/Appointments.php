@@ -4,11 +4,13 @@ require_once 'AbstractModel.php';
 
 class Appointments extends AbstractModel {
 	
+	// app_date - timestamp
 	public static $attributes = [
-		'first_name' => null, 
-		'last_name' => null
+		'patient_id' => null, 
+		'doctor_id' => null,
+		'app_date' => null
 	];
 
-	public static $table_name = 'Patients';
+	public static $table_name = 'Appointments';
 
 }
