@@ -1,8 +1,10 @@
 <?php
-
 require_once __DIR__.'/../models/AbstractModel.php';
+require_once __DIR__.'/../../Database.php';
+require_once __DIR__.'/../../Validation.php';
 
 abstract class AbstractController {
+    use Validation;
 
     public static $model_name = 'AbstractModel';
 

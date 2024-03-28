@@ -6,22 +6,16 @@ class PatientsController extends AbstractController {
 
     public static $model_name = 'Patients';
 
-    public static function validate($valid_data)
-    {
-        foreach ($valid_data as $key => $value) {
-            if (strlen($value) < 1) {
-                throw new exception ("имя / фамилия не могут быть пустыми");
-            }
-            if (ctype_alpha($value) == false) {
-                throw new exception ("имя / фамилия не должны содержать цифры");
-            }
-        }
-        return true;
-    }
-
     public function create($post)
     {
-        self::validate($post);
+        parent::strValidate($post);
+        parent::duplicateValidate($post, self::$model_name);
         return parent::create($post);
+    }
+
+    public function update($id, $changed_data)
+    {
+        parent::strValidate($changed_data);
+        return parent::update($id, $changed_data);
     }
 }
