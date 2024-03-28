@@ -8,14 +8,19 @@ class PatientsController extends AbstractController {
 
     public function create($post)
     {
-        parent::strValidate($post);
+        parent::strValidate($post['first_name']);
+        parent::strValidate($post['last_name']);
         parent::duplicateValidate($post, self::$model_name);
         return parent::create($post);
     }
 
     public function update($id, $changed_data)
     {
-        parent::strValidate($changed_data);
+        foreach ($changed_data as $key => $value) {
+            if ($key == 'first_name' || $key == 'last_name') {
+                parent::strValidate($value);
+            }
+        }
         return parent::update($id, $changed_data);
     }
 }

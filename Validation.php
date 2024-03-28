@@ -5,14 +5,12 @@ trait Validation {
 
 	public static function strValidate($valid_data)
     {
-    	foreach ($valid_data as $key => $value) {
-	    	if (strlen($value) < 1) {
-	            throw new exception ($key."поле не может быть пустым");
-	        }
-	        if (!ctype_alpha($value)) {
-	            throw new exception ($key." содержит цифры");
-	        }
-    	}
+	    if (strlen($valid_data) < 1) {
+	        throw new exception ("поле не может быть пустым");
+	    }
+	    if (!ctype_alpha($valid_data)) {
+	        throw new exception ("поле содержит цифры");
+	    }
         return true;
     }
 
