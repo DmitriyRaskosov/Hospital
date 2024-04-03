@@ -16,19 +16,20 @@ class Api {
     protected static $instance;
 
     // запрос пользователя в виде массива, из которого можно будет понять, что именно пользователь хочет сделать
-    protected function __construct($method, $request_uri, $id = null)
+    protected function __construct($method, $request_uri)
     {
         $this->request_method = $method;
         $this->ctrl_request = $request_uri[3];
         if (isset($request_uri[4])) {
-            $this->id = $request_uri[4];
+            $this->id = ltrim($request_uri[4], "?");
+            $this->get = $this->id;
         }
     }
 
     // попытка в singleton
     public static function getInstance($uri_in_array) {
         if (self::$instance === null) {
-            self::$instance = new self($_SERVER['REQUEST_METHOD'], $uri_in_array, $uri_in_array);
+            self::$instance = new self($_SERVER['REQUEST_METHOD'], $uri_in_array);
         }
         return self::$instance;
     }
@@ -47,7 +48,7 @@ class Api {
                 echo json_encode($result);
                 return true;
             }
-            $result = $controller->getAll();
+            $result = $controller->getAll($_GET);
             echo json_encode($result);
             return true;
 

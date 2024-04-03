@@ -1,8 +1,10 @@
 <?php
 
 require_once __DIR__.'/../../Database.php';
+require_once __DIR__.'/../../ValidationTrait.php';
 
 abstract class AbstractModel {
+	use Validation;
 
 	public $id = null;
 
@@ -22,7 +24,7 @@ abstract class AbstractModel {
 	    return $data;
 	}
 	
-	public static function getAll()
+	public static function getAll($data)
 	{
 		$data = Database::getConnect()->query('SELECT * FROM '.static::$table_name);
 		return $data;

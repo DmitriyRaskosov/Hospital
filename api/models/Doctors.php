@@ -13,6 +13,6 @@ class Doctors extends AbstractModel {
 		'work_end' => null
 	];
 
-	public static $path = __DIR__."/../../data/doctors.json";
+	public static $table_name = 'Doctors';
 
 }
