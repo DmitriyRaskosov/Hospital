@@ -7,7 +7,7 @@ require_once 'models/Appointments.php';
 require_once 'models/Doctors.php';
 require_once 'models/Translations.php';
 require_once 'models/Patients.php';
-require_once 'Translator.php';
+require_once 'TranslatorTrait.php';
 require_once __DIR__.'/../Database.php';
 
 

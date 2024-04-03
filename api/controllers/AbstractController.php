@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__.'/../models/AbstractModel.php';
 require_once __DIR__.'/../../Database.php';
-require_once __DIR__.'/../../Validation.php';
+require_once __DIR__.'/../../ValidationTrait.php';
 
 abstract class AbstractController {
     use Validation;

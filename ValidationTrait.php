@@ -16,7 +16,7 @@ trait Validation {
 
     public static function intValidate($valid_data)
     {
-    	if (!is_int($valid_data) && !is_float($valid_data) && !is_numeric($valid_data)) {
+    	if (!is_numeric($valid_data)) {
     		throw new exception ($valid_data." не является числом");
     	}
     	return true;

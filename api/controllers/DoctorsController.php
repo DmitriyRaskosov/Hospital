@@ -10,14 +10,7 @@ class DoctorsController extends AbstractController {
     protected static function specializationValidate($specialization)
     {
         parent::strValidate($specialization);
-        foreach (self::$specializations_list as $key => $value) {
-            $exist_check = 0;
-            if ($value == $post['specialization']) {
-                $exist_check = 1;
-                break;
-            }
-        }
-        if ($exist_check == 0) {
+        if (!in_array($specialization, self::$specializations_list)) {
             throw new exception ("Такая специальность отсутствует в списке доступных специальностей");
         }
         return true;
