@@ -14,10 +14,10 @@ abstract class AbstractController {
         return $model_name::getOne($id);
     }
 
-    public function getAll()
+    public function getAll($get)
     {
         $model_name = static::$model_name;
-        return $model_name::getAll();
+        return $model_name::getAll($get);
     }
 
     public function create($post)

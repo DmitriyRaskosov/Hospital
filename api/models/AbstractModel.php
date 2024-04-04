@@ -24,9 +24,9 @@ abstract class AbstractModel {
 	    return $data;
 	}
 	
-	public static function getAll($data)
+	public static function getAll($get)
 	{
-		$data = Database::getConnect()->query('SELECT * FROM '.static::$table_name);
+		$data = self::filter($get, static::$table_name);
 		return $data;
 	}
 

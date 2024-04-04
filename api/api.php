@@ -20,10 +20,6 @@ class Api {
     {
         $this->request_method = $method;
         $this->ctrl_request = $request_uri[3];
-        if (isset($request_uri[4])) {
-            $this->id = ltrim($request_uri[4], "?");
-            $this->get = $this->id;
-        }
     }
 
     // попытка в singleton
@@ -41,14 +37,15 @@ class Api {
         $controller_name = self::$instance->ctrl_request.'Controller';
         $controller = new $controller_name;
         if (self::$instance->request_method == 'GET') {
+            $get = $_GET;
             // команда контроллеру на вызов метода getAll, если $id = null
-            if (isset(self::$instance->id) AND self::$instance->id != null) {
+            if (isset($get['id']) AND $get['id'] != null) {
                 // команда контроллеру на вызов метода getOne
-                $result = $controller->getOne(self::$instance->id);
+                $result = $controller->getOne($get['id']);
                 echo json_encode($result);
                 return true;
             }
-            $result = $controller->getAll($_GET);
+            $result = $controller->getAll($get);
             echo json_encode($result);
             return true;
 
