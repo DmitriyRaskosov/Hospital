@@ -21,38 +21,7 @@ trait Validation {
     	}
     	return true;
     }
-
-    public static function filter($valid_data, $table_name)
-    {
-        // если входящие данные отсутствуют, возвращаем все записи из таблицы
-        if ($valid_data == null) {
-            $data = Database::getConnect()->query('SELECT * FROM '.$table_name);
-            return $data;
-        }
-
-        // тут разбираем и формируем входящие данные в нужный для запроса формат (добавляем кавычки)
-        $data_keys = array_keys($valid_data);
-        $data_values = array_values($valid_data);
-        foreach ($data_values as $key => $value){
-            $data_values[$key] = "'".$value."'";
-        }
-
-        // тут создаётся строка с будущим запросом
-        $query_in_str = null;
-        $counter = 0;
-        while (count($data_values) > $counter) {
-            if ($counter >= 1) {
-                $query_in_str .= ' AND ';
-            }
-            $query_in_str .= $data_keys[$counter]." = ";
-            $query_in_str .= $data_values[$counter];
-            $counter++;
-        }
-
-        $data = Database::getConnect()->query('SELECT * FROM '.$table_name.' WHERE '.$query_in_str);
-        return $data;
-    }
-
+    /**
     public static function duplicateValidate($valid_data, $table_name)
     {
         $possible_double = self::filter($valid_data, $table_name);
@@ -61,4 +30,5 @@ trait Validation {
         }
         return true;
     }
+    */
 }

@@ -18,6 +18,29 @@ abstract class AbstractModel {
 		return true;
 	}
 
+	public static function filter($valid_data)
+    {
+        if ($valid_data != null) {
+        	self::validation($valid_data);
+        	
+            // тут разбираем и формируем входящие данные в нужный для запроса формат (добавляем кавычки)
+            $data_keys = array_keys($valid_data);
+            $data_values = array_values($valid_data);
+
+            $query = [];
+            foreach ($data_values as $key => $value){
+                $data_values[$key] = "'".$value."'";
+                $query[] = $data_keys[$key]." = ".$data_values[$key];
+            }
+            $query = implode(" AND ", $query);
+
+            $data = Database::getConnect()->query('SELECT * FROM '.static::$table_name.' WHERE '.$query);
+            return $data;
+        }
+        $data = Database::getConnect()->query('SELECT * FROM '.static::$table_name);
+        return $data;
+    }
+
 	public static function getOne($id)
 	{
 	    $data = Database::getConnect()->query('SELECT * FROM '.static::$table_name.' WHERE id='.$id);
@@ -26,7 +49,7 @@ abstract class AbstractModel {
 	
 	public static function getAll($get)
 	{
-		$data = self::filter($get, static::$table_name);
+		$data = self::filter($get);
 		return $data;
 	}
 

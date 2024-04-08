@@ -12,7 +12,7 @@ class PatientsController extends AbstractController {
 
         parent::strValidate($post['last_name']);
 
-        parent::duplicateValidate($post, self::$model_name);
+        //parent::duplicateValidate($post, self::$model_name);
         
         return parent::create($post);
     }

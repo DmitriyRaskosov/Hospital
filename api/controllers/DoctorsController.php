@@ -34,7 +34,7 @@ class DoctorsController extends AbstractController {
         $duplicate_check['first_name'] = $post['first_name'];
         $duplicate_check['last_name'] = $post['last_name'];
         $duplicate_check['specialization'] = $post['specialization'];
-        parent::duplicateValidate($duplicate_check, self::$model_name);
+        //parent::duplicateValidate($duplicate_check, self::$model_name);
 
         self::specializationValidate($post['specialization']);
 
