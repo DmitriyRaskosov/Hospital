@@ -11,7 +11,7 @@ abstract class AbstractModel {
 	public static function validation ($array)
 	{
 		foreach ($array as $key => $value) {
-			if (!array_key_exists($key, static::$attributes)) {
+			if (!array_key_exists($value, static::$attributes)) {
 				throw new Exception ("Ошибка в написании ".$key);
 			}
 		}
@@ -21,17 +21,22 @@ abstract class AbstractModel {
 	public static function filter($valid_data)
     {
         if ($valid_data != null) {
-        	self::validation($valid_data);
+        	$valid_data = (array)json_decode($valid_data['filter'], true);
         	
             // тут разбираем и формируем входящие данные в нужный для запроса формат (добавляем кавычки)
-            $data_keys = array_keys($valid_data);
-            $data_values = array_values($valid_data);
-
             $query = [];
-            foreach ($data_values as $key => $value){
-                $data_values[$key] = "'".$value."'";
-                $query[] = $data_keys[$key]." = ".$data_values[$key];
+            foreach ($valid_data as $arrays => $filters) {
+            	self::validation((array)$filters['filter_name']);
+            	$filter = null;
+            	foreach ($filters as $key => $value) {
+            		if ($key == 'value') {
+            			$value = "'".$value."'";
+            		}
+            		$filter .= " ".$value;
+            	}
+            	$query[] = $filter;
             }
+
             $query = implode(" AND ", $query);
 
             $data = Database::getConnect()->query('SELECT * FROM '.static::$table_name.' WHERE '.$query);
