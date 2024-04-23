@@ -10,7 +10,8 @@ class Doctors extends AbstractModel {
 		'specialization' => null,
 		'cost' => null,
 		'work_begin' => null,
-		'work_end' => null
+		'work_end' => null,
+		'id' => null
 	];
 
 	public static $table_name = 'Doctors';

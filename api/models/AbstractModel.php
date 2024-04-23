@@ -22,11 +22,14 @@ abstract class AbstractModel {
     {
         if ($valid_data != null) {
         	$valid_data = (array)json_decode($valid_data['filter'], true);
-        	
+        	print_r($valid_data);
             // тут разбираем и формируем входящие данные в нужный для запроса формат (добавляем кавычки)
             $query = [];
             foreach ($valid_data as $arrays => $filters) {
             	self::validation((array)$filters['filter_name']);
+            	if (strlen($filters['symbol']) > 2) {
+            		throw new Exception ('Проверь количество символов');
+            	}
             	$filter = null;
             	foreach ($filters as $key => $value) {
             		if ($key == 'value') {

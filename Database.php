@@ -12,6 +12,7 @@ class Database {
     {
         $this->connect = pg_connect('host='.$this->host." ".'dbname='.$this->dbname." ".'user='.$this->user." ".'password='.$this->password)
         or throw new exception('Не удалось соединиться: '.pg_last_error());
+
     }
 
     public static function getConnect() {
@@ -23,7 +24,8 @@ class Database {
 
     public function query($query)
     {
-        $query_result = pg_query(self::$dbconn->connect, $query) or throw new exception('Ошибка запроса: '.pg_last_error());
+        $queryyy = pg_prepare(self::$dbconn->connect, 'test', $query);
+        $query_result = pg_execute(self::$dbconn->connect, 'test', array('')) or throw new exception('Ошибка запроса: '.pg_last_error());
         while ($temp_result = pg_fetch_assoc($query_result)) {
             $result[] = $temp_result;
         }
