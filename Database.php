@@ -24,8 +24,8 @@ class Database {
 
     public function query($query)
     {
-        $queryyy = pg_prepare(self::$dbconn->connect, 'test', $query);
-        $query_result = pg_execute(self::$dbconn->connect, 'test', array('')) or throw new exception('Ошибка запроса: '.pg_last_error());
+        $queryyy = pg_prepare(self::$dbconn->connect, 'my_query', $query);
+        $query_result = pg_execute(self::$dbconn->connect, 'my_query', array()) or throw new exception('Ошибка запроса: '.pg_last_error());
         while ($temp_result = pg_fetch_assoc($query_result)) {
             $result[] = $temp_result;
         }
