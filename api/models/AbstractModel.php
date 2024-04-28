@@ -22,27 +22,33 @@ abstract class AbstractModel {
     {
         if ($valid_data != null) {
         	$valid_data = (array)json_decode($valid_data['filter'], true);
-        	print_r($valid_data);
-            // тут разбираем и формируем входящие данные в нужный для запроса формат (добавляем кавычки)
-            $query = [];
+
+            // тут разбираем и формируем входящие данные в нужный для запроса формат - разбираем json на две части - запрос с плейсхолдерами и массив значений
+            $query_filters = [];
+            $query_values = [];
+            $placeholder_num = 1;
             foreach ($valid_data as $arrays => $filters) {
+
+            	// валидируем фильтры на соответствие атрибутам модели
             	self::validation((array)$filters['filter_name']);
             	if (strlen($filters['symbol']) > 2) {
             		throw new Exception ('Проверь количество символов');
             	}
             	$filter = null;
+            	// выносим значения фильтров в отдельный массив, заменяем значения в массиве фильтров на плейсхолдеры
             	foreach ($filters as $key => $value) {
             		if ($key == 'value') {
-            			$value = "'".$value."'";
+            			$query_values['$'.$placeholder_num] = $value;
+            			$value = '$'.$placeholder_num;
+            			$placeholder_num++;
             		}
             		$filter .= " ".$value;
             	}
-            	$query[] = $filter;
+            	$query_filters[] = $filter;
             }
-
-            $query = implode(" AND ", $query);
-
-            $data = Database::getConnect()->query('SELECT * FROM '.static::$table_name.' WHERE '.$query);
+            $query_filters = implode(' AND ', $query_filters);
+            
+            $data = Database::getConnect()->query('SELECT * FROM '.static::$table_name.' WHERE '.$query_filters, $query_values);
             return $data;
         }
         $data = Database::getConnect()->query('SELECT * FROM '.static::$table_name);
