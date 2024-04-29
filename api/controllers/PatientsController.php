@@ -17,13 +17,8 @@ class PatientsController extends AbstractController {
         return parent::create($post);
     }
 
-    public function update($id, $changed_data)
+    public function update($id)
     {
-        foreach ($changed_data as $key => $value) {
-            if ($key == 'first_name' || $key == 'last_name') {
-                parent::strValidate($value);
-            }
-        }
-        return parent::update($id, $changed_data);
+        return parent::update($id);
     }
 }

@@ -27,6 +27,7 @@ class DoctorsController extends AbstractController {
 
     public function create($post)
     {
+        /*
         parent::strValidate($post['first_name']);
 
         parent::strValidate($post['last_name']);
@@ -43,12 +44,14 @@ class DoctorsController extends AbstractController {
         parent::intValidate($post['work_begin']);
 
         parent::intValidate($post['work_end']);
-
+        */
         return parent::create($post);
+        
     }
 
-    public function update($id, $changed_data)
+    public function update($id)
     {
+        /* $changed_data теперь в модели, не в апи
         foreach ($changed_data as $key => $value) {
             if ($key == 'first_name' || $key == 'last_name') {
                 parent::strValidate($value);
@@ -60,6 +63,8 @@ class DoctorsController extends AbstractController {
                 parent::intValidate($value);
             }
         }
-        return parent::update($id, $changed_data);
+        */
+        return parent::update($id);
+        
     }
 }

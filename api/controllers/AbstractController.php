@@ -26,10 +26,10 @@ abstract class AbstractController {
         return $model_name::create($post);
     }
 
-    public function update($id, $changed_data)
+    public function update($id)
     {
         $model_name = static::$model_name;
-        return $model_name::update($id, $changed_data);
+        return $model_name::update($id);
     }
 
     public function delete($id)

@@ -36,8 +36,10 @@ class Api {
         // Создаем экземпляр нужного нам контроллера
         $controller_name = self::$instance->ctrl_request.'Controller';
         $controller = new $controller_name;
+        $get = $_GET;
+        $post = $_POST;
+
         if (self::$instance->request_method == 'GET') {
-            $get = $_GET;
             // команда контроллеру на вызов метода getAll, если $id = null
             if (isset($get['id']) AND $get['id'] != null) {
                 // команда контроллеру на вызов метода getOne
@@ -52,29 +54,26 @@ class Api {
         }
         // команда контроллеру на вызов метода create
         elseif (self::$instance->request_method == 'POST') {
-            $post = $_POST;
             $result = $controller->create($post);
             echo json_encode($result);
             return true;
         }
         // команда контроллеру на вызов метода update
-        elseif (self::$instance->request_method == 'PUT') {
-            if (!isset(self::$instance->id)) {
+        elseif (self::$instance->request_method == 'PUT') {  
+            if (!isset($get['id'])) {
                 throw new Exception('Необходимый для работы id отсутствует');
             }
-            $input_put = (array)json_decode(file_get_contents("php://input"), true);
-            $changed_data = $input_put[0];
-            $result = $controller->update(self::$instance->id, $changed_data);
+            $result = $controller->update($get['id']);
             echo json_encode($result);
             return true;
         }
         // команда контроллеру на вызов метода delete
         elseif (self::$instance->request_method == 'DELETE') {
-            if (!isset(self::$instance->id)) {
+            if (!isset($get['id'])) {
                 throw new Exception('Необходимый для работы id отсутствует');
             }
             $input_put = (array)json_decode(file_get_contents("php://input"), true);
-            $result = $controller->delete(self::$instance->id);
+            $result = $controller->delete($get['id']);
             echo json_encode($result);
             return true;
         }
