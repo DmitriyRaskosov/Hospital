@@ -20,95 +20,69 @@ abstract class AbstractModel {
 
 	public static function filter($valid_data, $query_string, $id = null)
     {
-        // тут разбираем и формируем входящие данные в нужный для запроса формат - запрос с плейсхолдерами и массив значений
         $query_filters = [];
         $query_values = [];
         $placeholder_num = 1;
 
-        if (str_contains($query_string, 'SELECT')) {
+        // валидируем фильтры на соответствие атрибутам модели
+    	foreach ($valid_data as $arrays => $filters) {
+    		self::validation((array)$filters['filter_name']);
+		    if (strlen($filters['symbol']) > 2) {
+		        throw new Exception ('Проверь количество символов');
+		    }
+
+		    /* 
+		    тут разбираем и формируем входящие данные в нужный для запроса формат - запрос с плейсхолдерами и массив значений
+		    $query_values['плейсхолдер' => 'значение']
+		    $query_filters['дефолтный номер ключа' => 'имя_фильтра "пробел" знак "пробел" плейсхолдер'] 
+		    */
         	foreach ($valid_data as $arrays => $filters) {
 
-		        // валидируем фильтры на соответствие атрибутам модели
-		        self::validation((array)$filters['filter_name']);
-		        if (strlen($filters['symbol']) > 2) {
-		        	throw new Exception ('Проверь количество символов');
-		        }
-		        $filter = null;
-
-		        // выносим значения фильтров в отдельный массив, заменяем значения в массиве фильтров на плейсхолдеры
-		        // $query_values['плейсхолдер' => 'полученное значение']
+        		$filter = null;
+		        // $query_values
 		        foreach ($filters as $filter_name => $value) {
 			        if ($filter_name == 'value') {
 				        $query_values['$'.$placeholder_num] = $value;
+
+				        // для инсёрта у значений нужны кавычки, но их не должно быть у значений с типом данных integer
+				        if (str_contains($query_string, 'INSERT') && !is_numeric($value)) {
+				        	$query_values['$'.$placeholder_num] = "'".$value."'";
+				        }
+
 				        $value = '$'.$placeholder_num;
 				        $placeholder_num++;
-				        }
+				    }
 			        $filter .= " ".$value;
 		        }
-		        // query_filters['дефолтный номер ключа' => 'имя_фильтра знак плейсхолдер'] 
+		        // $query_filters
 		        $query_filters[] = $filter;
 		    }
-	        $query_filters = implode(' AND ', $query_filters);
 
-	        $data = Database::getConnect()->query($query_string.$query_filters, $query_values);
-	        return $data;
-        }
+		    // в зависимости от оператора запроса, собираем и формируем данные для запроса, после чего делаем запрос и кладём результат в $data
+		    if (str_contains($query_string, 'SELECT')) {
+        		$query_filters = implode(' AND ', $query_filters);
+        		$data = Database::getConnect()->query($query_string.$query_filters, $query_values);
+	        	return $data;
+        	}
+        	if (str_contains($query_string, 'INSERT')) {
+        		// для инсёрта query_filters['дефолтный номер ключа' => 'имя_фильтра знак плейсхолдер'] переделываем в query_filters['имя_фильтра' => 'плейсхолдер'] из-за синтаксиса postgres
+        		$insert_filters = [];
+				foreach ($query_filters as $key => $value) {
+					// по непонятной причине первый символ $value - пробел, потому начинаем с "1", а при использовании strpos пробел появляется в конце, "-1" его убирает
+	        		$insert_filters[substr($value, 1, strpos($value, " ", 1)-1)] = substr($value, strrpos($value, " ", true));
+	        	}
 
-        if (str_contains($query_string, 'INSERT')) {
-        	foreach ($valid_data as $arrays => $filters) {
-
-        		// валидируем фильтры на соответствие атрибутам модели
-        		self::validation((array)$filters['filter_name']);
-		        if (strlen($filters['symbol']) > 2) {
-		        	throw new Exception ('Проверь количество символов');
-		        }
-
-		        // query_filters['название ключа' => 'плейсхолдер'], $query_values['плейсхолдер' => 'полученное значение']
-				foreach ($filters as $filter_name => $value) {
-					if ($filter_name == 'filter_name') {
-						$query_filters[$value] = '$'.$placeholder_num;
-						$query_values['$'.$placeholder_num] = "'".$filters['value']."'";
-						$placeholder_num++;
-					}
-					// в БД все числа имеют тип данных integer, а при заполнении новых массивов выше у всех значений появляются одинарные кавычки, что недопустимо для integer в postgres'е
-					if (is_numeric($value)) {
-						$query_values['$'.$placeholder_num - 1] = $filters['value'];
-					}
-				}
-			}
-			$query_placeholders = implode(", ", $query_filters);
-			$query_filters = implode(", ", array_keys($query_filters));
-
-        	$data = Database::getConnect()->query($query_string." (".$query_filters.") ".'VALUES'." (".$query_placeholders.")", $query_values);
-        	return $data;
-        }
-
-        if (str_contains($query_string, 'UPDATE') && self::getOne($id)) {
-        	foreach ($valid_data as $arrays => $filters) {
-
-        		// валидируем фильтры на соответствие атрибутам модели
-        		self::validation((array)$filters['filter_name']);
-		        if (strlen($filters['symbol']) > 2) {
-		        	throw new Exception ('Проверь количество символов');
-		        }
-		        $filter = null;
-
-				foreach ($filters as $filter_name => $value) {
-			        if ($filter_name == 'value') {
-				        $query_values['$'.$placeholder_num] = $value;
-				        $value = '$'.$placeholder_num;
-				        $placeholder_num++;
-				        }
-			        $filter .= " ".$value;
-		        }
-			    // query_filters['дефолтный номер ключа' => 'имя_фильтра знак плейсхолдер'] 
-			    $query_filters[] = $filter;
-			}
-		    $query_filters = implode(', ', $query_filters);
-
-		    $data = Database::getConnect()->query($query_string.$query_filters." ".'WHERE id = '.$id, $query_values);
-		    return $data;
-        }
+				$query_placeholders = implode(", ", $insert_filters);
+				$query_filters = implode(", ", array_keys($insert_filters));
+	        	$data = Database::getConnect()->query($query_string." (".$query_filters.") ".'VALUES'." (".$query_placeholders.")", $query_values);
+	        	return $data;
+        	}
+        	if (str_contains($query_string, 'UPDATE') && self::getOne($id)) {
+	        	$query_filters = implode(', ', $query_filters);
+			    $data = Database::getConnect()->query($query_string.$query_filters." ".'WHERE id = '.$id, $query_values);
+			    return $data;
+        	}
+    	}
 
     }
 
