@@ -23,10 +23,10 @@ abstract class AbstractModel {
         $query_filters = [];
         $query_values = [];
         $placeholder_num = 1;
-
-        // валидируем фильтры на соответствие атрибутам модели
-    	foreach ($valid_data as $arrays => $filters) {
-    		self::validation((array)$filters['filter_name']);
+    	
+        foreach ($valid_data as $arrays => $filters) {
+        	// валидируем фильтры на соответствие атрибутам модели
+        	self::validation((array)$filters['filter_name']);
 		    if (strlen($filters['symbol']) > 2) {
 		        throw new Exception ('Проверь количество символов');
 		    }
@@ -36,54 +36,51 @@ abstract class AbstractModel {
 		    $query_values['плейсхолдер' => 'значение']
 		    $query_filters['дефолтный номер ключа' => 'имя_фильтра "пробел" знак "пробел" плейсхолдер'] 
 		    */
-        	foreach ($valid_data as $arrays => $filters) {
 
-        		$filter = null;
-		        // $query_values
-		        foreach ($filters as $filter_name => $value) {
-			        if ($filter_name == 'value') {
-				        $query_values['$'.$placeholder_num] = $value;
+        	$filter = null;
+		    // $query_values
+		    foreach ($filters as $filter_name => $value) {
+			    if ($filter_name == 'value') {
+				    $query_values['$'.$placeholder_num] = $value;
 
-				        // для инсёрта у значений нужны кавычки, но их не должно быть у значений с типом данных integer
-				        if (str_contains($query_string, 'INSERT') && !is_numeric($value)) {
-				        	$query_values['$'.$placeholder_num] = "'".$value."'";
-				        }
-
-				        $value = '$'.$placeholder_num;
-				        $placeholder_num++;
+				    // для инсёрта у значений нужны кавычки, но их не должно быть у значений с типом данных integer
+				    if (str_contains($query_string, 'INSERT') && !is_numeric($value)) {
+				        $query_values['$'.$placeholder_num] = "'".$value."'";
 				    }
-			        $filter .= " ".$value;
-		        }
-		        // $query_filters
-		        $query_filters[] = $filter;
+
+				    $value = '$'.$placeholder_num;
+				    $placeholder_num++;
+				}
+			    $filter .= " ".$value;
 		    }
+		    // $query_filters
+		    $query_filters[] = $filter;
+		}
 
-		    // в зависимости от оператора запроса, собираем и формируем данные для запроса, после чего делаем запрос и кладём результат в $data
-		    if (str_contains($query_string, 'SELECT')) {
-        		$query_filters = implode(' AND ', $query_filters);
-        		$data = Database::getConnect()->query($query_string.$query_filters, $query_values);
-	        	return $data;
-        	}
-        	if (str_contains($query_string, 'INSERT')) {
-        		// для инсёрта query_filters['дефолтный номер ключа' => 'имя_фильтра знак плейсхолдер'] переделываем в query_filters['имя_фильтра' => 'плейсхолдер'] из-за синтаксиса postgres
-        		$insert_filters = [];
-				foreach ($query_filters as $key => $value) {
-					// по непонятной причине первый символ $value - пробел, потому начинаем с "1", а при использовании strpos пробел появляется в конце, "-1" его убирает
-	        		$insert_filters[substr($value, 1, strpos($value, " ", 1)-1)] = substr($value, strrpos($value, " ", true));
-	        	}
+		// в зависимости от оператора запроса, собираем и формируем данные для запроса, после чего делаем запрос и кладём результат в $data
+		if (str_contains($query_string, 'SELECT')) {
+        	$query_filters = implode(' AND ', $query_filters);
+        	$data = Database::getConnect()->query($query_string.$query_filters, $query_values);
+	        return $data;
+        }
+        if (str_contains($query_string, 'INSERT')) {
+        	// для инсёрта query_filters['дефолтный номер ключа' => 'имя_фильтра знак плейсхолдер'] переделываем в query_filters['имя_фильтра' => 'плейсхолдер'] из-за синтаксиса postgres
+        	$insert_filters = [];
+			foreach ($query_filters as $key => $value) {
+				// по непонятной причине первый символ $value - пробел, потому начинаем с "1", а при использовании strpos пробел появляется в конце, "-1" его убирает
+	        	$insert_filters[substr($value, 1, strpos($value, " ", 1)-1)] = substr($value, strrpos($value, " ", true));
+	        }
 
-				$query_placeholders = implode(", ", $insert_filters);
-				$query_filters = implode(", ", array_keys($insert_filters));
-	        	$data = Database::getConnect()->query($query_string." (".$query_filters.") ".'VALUES'." (".$query_placeholders.")", $query_values);
-	        	return $data;
-        	}
-        	if (str_contains($query_string, 'UPDATE') && self::getOne($id)) {
-	        	$query_filters = implode(', ', $query_filters);
-			    $data = Database::getConnect()->query($query_string.$query_filters." ".'WHERE id = '.$id, $query_values);
-			    return $data;
-        	}
-    	}
-
+			$query_placeholders = implode(", ", $insert_filters);
+			$query_filters = implode(", ", array_keys($insert_filters));
+	        $data = Database::getConnect()->query($query_string." (".$query_filters.") ".'VALUES'." (".$query_placeholders.")", $query_values);
+	        return $data;
+        }
+        if (str_contains($query_string, 'UPDATE') && self::getOne($id)) {
+	        $query_filters = implode(', ', $query_filters);
+			$data = Database::getConnect()->query($query_string.$query_filters." ".'WHERE id = '.$id, $query_values);
+			return $data;
+        }
     }
 
 	public static function getOne($id)
@@ -102,7 +99,6 @@ abstract class AbstractModel {
         	return $data;
 		}
 
-		$get = (array)json_decode($get['filter'], true);
 		$query_string = 'SELECT * FROM '.static::$table_name.' WHERE ';
 
 		$data = self::filter($get, $query_string);
@@ -111,17 +107,15 @@ abstract class AbstractModel {
 
 	public static function create($post)
 	{
-		$post = (array)json_decode($post['filter'], true);
 		$query_string = 'INSERT INTO '.static::$table_name;
 
 		$data = self::filter($post, $query_string);
         return $data;
 	}
 
-	public static function update($id)
+	public static function update($put, $id)
 	{	
 		self::intValidate($id);
-		$put = (array)json_decode(file_get_contents("php://input"), true);
         $query_string = 'UPDATE '.static::$table_name.' SET ';
 
 	    $data = self::filter($put, $query_string, $id);

@@ -30,6 +30,13 @@ class Api {
         return self::$instance;
     }
 
+    public static function json_decoder($encoded_data) 
+    {
+        $decoded_json = (array)json_decode($encoded_data, true);
+        print_r($decoded_json);
+        return $decoded_json;
+    }
+
     // здесь вызываем контроллер и передаём ему вызов метода из модели, при необходимости передаём id и др. данные
     public function requiredOutput()
     {
@@ -38,6 +45,7 @@ class Api {
         $controller = new $controller_name;
         $get = $_GET;
         $post = $_POST;
+        $put = file_get_contents("php://input");
 
         if (self::$instance->request_method == 'GET') {
             // команда контроллеру на вызов метода getAll, если $id = null
@@ -47,6 +55,9 @@ class Api {
                 echo json_encode($result);
                 return true;
             }
+            if (isset($get['filter'])) {
+                $get = self::json_decoder($get['filter']);
+            }
             $result = $controller->getAll($get);
             echo json_encode($result);
             return true;
@@ -54,6 +65,7 @@ class Api {
         }
         // команда контроллеру на вызов метода create
         elseif (self::$instance->request_method == 'POST') {
+            $post = self::json_decoder($post['filter']);
             $result = $controller->create($post);
             echo json_encode($result);
             return true;
@@ -63,7 +75,8 @@ class Api {
             if (!isset($get['id'])) {
                 throw new Exception('Необходимый для работы id отсутствует');
             }
-            $result = $controller->update($get['id']);
+            $put = self::json_decoder($put);
+            $result = $controller->update($put, $get['id']);
             echo json_encode($result);
             return true;
         }
@@ -72,7 +85,6 @@ class Api {
             if (!isset($get['id'])) {
                 throw new Exception('Необходимый для работы id отсутствует');
             }
-            $input_put = (array)json_decode(file_get_contents("php://input"), true);
             $result = $controller->delete($get['id']);
             echo json_encode($result);
             return true;

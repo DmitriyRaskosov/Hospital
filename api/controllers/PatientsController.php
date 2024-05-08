@@ -8,17 +8,19 @@ class PatientsController extends AbstractController {
 
     public function create($post)
     {
-        parent::strValidate($post['first_name']);
-
-        parent::strValidate($post['last_name']);
+        // убираем один уровень вложенности и валидируем данные
+        foreach ($post as $filters_num => $filters_value) {
+            parent::strValidate($filters_value['first_name']);
+            parent::strValidate($filters_value['last_name']);
+        }
 
         //parent::duplicateValidate($post, self::$model_name);
         
         return parent::create($post);
     }
 
-    public function update($id)
+    public function update($put, $id)
     {
-        return parent::update($id);
+        return parent::update($put, $id);
     }
 }

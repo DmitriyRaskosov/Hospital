@@ -27,32 +27,31 @@ class DoctorsController extends AbstractController {
 
     public function create($post)
     {
+        // убираем один уровень вложенности и валидируем данные
+        foreach ($post as $filters_num => $filters_value) {
+            parent::strValidate($filters_value['first_name']);
+            parent::strValidate($filters_value['last_name']);
+            self::specializationValidate($filters_value['specialization']);
+            self::costValidate($filters_value['cost']);
+            //parent::intValidate($filters_value['work_begin']);
+            //parent::intValidate($filters_value['work_end']);
+        }
+
         /*
-        parent::strValidate($post['first_name']);
-
-        parent::strValidate($post['last_name']);
-
         $duplicate_check['first_name'] = $post['first_name'];
         $duplicate_check['last_name'] = $post['last_name'];
         $duplicate_check['specialization'] = $post['specialization'];
-        //parent::duplicateValidate($duplicate_check, self::$model_name);
-
-        self::specializationValidate($post['specialization']);
-
-        self::costValidate($post['cost']);
-
-        parent::intValidate($post['work_begin']);
-
-        parent::intValidate($post['work_end']);
+        parent::duplicateValidate($duplicate_check, self::$model_name);
         */
+
         return parent::create($post);
         
     }
 
-    public function update($id)
+    public function update($put, $id)
     {
-        /* $changed_data теперь в модели, не в апи
-        foreach ($changed_data as $key => $value) {
+        /*
+        foreach ($put as $key => $value) {
             if ($key == 'first_name' || $key == 'last_name') {
                 parent::strValidate($value);
             } elseif ($key == 'specialization') {
@@ -64,7 +63,7 @@ class DoctorsController extends AbstractController {
             }
         }
         */
-        return parent::update($id);
+        return parent::update($put, $id);
         
     }
 }
