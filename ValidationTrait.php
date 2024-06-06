@@ -21,7 +21,7 @@ trait Validation {
     	}
     	return true;
     }
-    /**
+    
     public static function duplicateValidate($valid_data, $table_name)
     {
         $possible_double = self::filter($valid_data, $table_name);
@@ -30,5 +30,4 @@ trait Validation {
         }
         return true;
     }
-    */
 }
