@@ -4,7 +4,7 @@ class Database {
     
     protected static $dbconn;
     public $host = 'localhost';
-    public $dbname = 'durka';
+    public $dbname = 'furniture_shop';
     public $user = 'postgres';
     public $password = 'postgres';
 
@@ -30,6 +30,12 @@ class Database {
         while ($temp_result = pg_fetch_assoc($query_result)) {
             $result[] = $temp_result;
         }
+        return $result;
+    }
+
+    public function migration_query($query_string)
+    {
+        $result = pg_query(self::$dbconn->connect, $query_string);
         return $result;
     }
 }
