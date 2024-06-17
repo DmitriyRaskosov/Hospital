@@ -12,12 +12,12 @@ require_once 'Database.php';
 Если результат отрицательный, то миграция прерывается и выбрасывается exception.
 */
 
-class Run_migrations {
+class RunMigrations {
 
 	public static $directory;
 
 	// метод, который прочитает названия всех файлов миграции, отформатирует их нужным нам образом и сложит в массив.
-	public static function fileReader($directory)
+	public static function readFiles($directory)
 	{
 		// записываем в $filenames_array названия всех файлов при помощи scandir, убираем первые два значения "." и ".." при помощи array_diff и используем array_values для "обнуления" ключей.
 		$filenames_array = array_values(array_diff(scandir($directory), [".", ".."]));
@@ -26,21 +26,24 @@ class Run_migrations {
 		return $filenames_array;
 	}
 
-	// метод, который получит массив названий файлов миграции, создаст подключение к БД, поочерёдно прочитает каждый файл и отправит содержимое запросом в БД
-	public static function queryPusher($obj)
+	/* 
+	метод, который получит массив названий файлов миграции, создаст подключение к БД, поочерёдно прочитает каждый файл и отправит содержимое запросом в БД
+	так как для взаимодействия с БД методом query() используются pg_prepare и pg_execute, то и передаётся в метод (array)null в качестве значения.
+	*/
+	public static function pushQuery($obj)
 	{
 		echo $obj->directory;
-		$filenames_array = $obj->fileReader($obj->directory);
+		$filenames_array = $obj->readFiles($obj->directory);
 		$results = [];
 		foreach ($filenames_array as $key => $value) {
 			$query_string = file_get_contents($obj->directory."/".$value);
-			$results[] = Database::getConnect()->migration_query($query_string);
+			$results[] = Database::getConnect()->query($query_string, (array)null);
 		}
 		return $results;
 	}
 
 }
-$test = new Run_migrations();
+$test = new RunMigrations();
 $test->directory = __DIR__."\migrations";
 
-print_r($test->queryPusher($test));
+print_r($test->pushQuery($test));
