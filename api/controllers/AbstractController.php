@@ -37,4 +37,10 @@ abstract class AbstractController {
         $model_name = static::$model_name;
         return $model_name::delete($id);
     }
+
+    public function userAuthentification($email, $password)
+    {
+        $model_name = static::$model_name;
+        return $model_name::userAuthentification($email, $password);
+    }
 }

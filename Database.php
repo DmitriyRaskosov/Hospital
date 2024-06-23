@@ -28,9 +28,11 @@ class Database {
         $query_prepared = pg_prepare(self::$dbconn->connect, '', $query);
         $query_result = pg_execute(self::$dbconn->connect, '', $values);
 
+        /*
         if (pg_result_error(pg_get_result(self::$dbconn->connect)) != null) {
             throw new exception('Ошибка запроса: '.$error_check);
         }
+        */
         while ($temp_result = pg_fetch_assoc($query_result)) {
             $result[] = $temp_result;
         }

@@ -1,12 +1,6 @@
 <?php
-require_once 'controllers/AppointmentsController.php';
-require_once 'controllers/DoctorsController.php';
-require_once 'controllers/TranslationsController.php';
-require_once 'controllers/PatientsController.php';
-require_once 'models/Appointments.php';
-require_once 'models/Doctors.php';
-require_once 'models/Translations.php';
-require_once 'models/Patients.php';
+require_once 'controllers/UsersController.php';
+require_once 'models/Users.php';
 require_once 'TranslatorTrait.php';
 require_once __DIR__.'/../Database.php';
 
@@ -47,6 +41,13 @@ class Api {
         $post = $_POST;
         $put = file_get_contents("php://input");
 
+        if (self::$instance->request_method == 'GET') {
+            $result = $controller->userAuthentification($get['email'], $get['password']);
+            echo json_encode($result);
+            return true;
+        }
+
+        /*
         if (self::$instance->request_method == 'GET') {
             // команда контроллеру на вызов метода getAll, если $id = null
             if (isset($get['id']) AND $get['id'] != null) {
@@ -92,7 +93,8 @@ class Api {
         else {
             // Обработка ошибки "неизвестный https-метод"
         }
-        return false;
+        */
+        //return false;
     }
 }
 

@@ -140,4 +140,16 @@ abstract class AbstractModel {
 			return $data;
 		}
 	}
+
+	public static function userAuthentification($email, $password)
+	{
+		$query_string = 'SELECT * FROM '.static::$table_name.' WHERE email = ';
+		$data = Database::getConnect()->query($query_string."$1", (array)$email);
+
+		if ($data[0]['password'] !== md5($password)) {
+			throw new Exception ("Пароли не совпадают.");
+		}
+		
+		return $data;
+	}
 }
