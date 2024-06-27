@@ -146,10 +146,22 @@ abstract class AbstractModel {
 		$query_string = 'SELECT * FROM '.static::$table_name.' WHERE email = ';
 		$data = Database::getConnect()->query($query_string."$1", (array)$email);
 
-		if ($data[0]['password'] !== md5($password)) {
-			throw new Exception ("Пароли не совпадают.");
+		if (!isset($data) ?? $data[0]['password'] !== md5($password)) {
+			throw new Exception ("Некорректный логин или пароль");
 		}
 		
-		return $data;
+		$data_gen = [];
+		$data_gen['key'] =  md5(bin2hex(random_bytes(5)));
+		$data_gen['key_timestamp'] = date('Y-m-d H:i:s', time());
+		
+
+		// Пока что циклом. Как только мы дойдём до использования метода filter, если в нём не будет изменений, то я перепишу кусок ниже под использование этого метода вместо цикла с запросом.
+		foreach ($data_gen as $key => $value) {
+			$query_string = 'UPDATE '.static::$table_name.' SET '.$key. ' = '."'".$value."'".' WHERE email = ';
+			Database::getConnect()->query($query_string."$1", (array)$data[0]['email']);
+		}
+
+		return $data_gen['key'];
 	}
+	
 }

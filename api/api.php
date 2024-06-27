@@ -40,10 +40,14 @@ class Api {
         $get = $_GET;
         $post = $_POST;
         $put = file_get_contents("php://input");
+        $headers = apache_request_headers();
 
         if (self::$instance->request_method == 'GET') {
-            $result = $controller->userAuthentification($get['email'], $get['password']);
-            echo json_encode($result);
+            print_r($headers);
+            $authorization_result = $controller->userAuthorization($headers['Authorization']);
+            echo json_encode($authorization_result);
+            $authentification_result = $controller->userAuthentification($get['email'], $get['password']);
+            echo json_encode($authentification_result);
             return true;
         }
 
