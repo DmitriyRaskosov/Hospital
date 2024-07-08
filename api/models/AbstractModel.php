@@ -8,17 +8,15 @@ abstract class AbstractModel {
 
 	public $id = null;
 
-	public static function validation ($array)
+	public static function validation ($value)
 	{
-		foreach ($array as $key => $value) {
-			if (!array_key_exists($value, static::$attributes)) {
-				throw new Exception ("Ошибка в написании ".$key);
-			}
+		if (!in_array($value, static::$attributes)) {
+			throw new Exception ("Ошибка в написании атрибута");
 		}
 		return true;
 	}
 
-	public static function filter($valid_data, $query_string, $id = null)
+	public static function filter($valid_data, $query_string, $query_condition = null)
     {
         $query_filters = [];
         $query_values = [];
@@ -26,10 +24,20 @@ abstract class AbstractModel {
     	
         foreach ($valid_data as $arrays => $filters) {
         	// валидируем фильтры на соответствие атрибутам модели
-        	self::validation((array)$filters['filter_name']);
+        	self::validation($filters['filter_name']);
 		    if (strlen($filters['symbol']) > 2) {
 		        throw new Exception ('Проверь количество символов');
 		    }
+
+		    /* валидация логина (email), пароля (password) и $query_condition будет здесь ?
+		     
+			$query_string = 'SELECT * FROM '.static::$table_name.' WHERE email = ';
+			$data = Database::getConnect()->query($query_string."$1", (array)$post[0]['email']);
+
+			if (!isset($data) ?? $data[0]['password'] !== md5($password)) {
+				throw new Exception ("Некорректный логин или пароль");
+			}
+			*/
 
 		    /* 
 		    тут разбираем и формируем входящие данные в нужный для запроса формат - запрос с плейсхолдерами и массив значений
@@ -76,9 +84,9 @@ abstract class AbstractModel {
 	        $data = Database::getConnect()->query($query_string." (".$query_filters.") ".'VALUES'." (".$query_placeholders.")", $query_values);
 	        return $data;
         }
-        if (str_contains($query_string, 'UPDATE') && self::getOne($id)) {
+        if (str_contains($query_string, 'UPDATE')) {
 	        $query_filters = implode(', ', $query_filters);
-			$data = Database::getConnect()->query($query_string.$query_filters." ".'WHERE id = '.$id, $query_values);
+			$data = Database::getConnect()->query($query_string.$query_filters." ".'WHERE '.$query_condition, $query_values);
 			return $data;
         }
     }
@@ -113,12 +121,19 @@ abstract class AbstractModel {
         return $data;
 	}
 
-	public static function update($put, $id)
+	public static function update($put, $query_condition = null, $id = null)
 	{	
-		self::intValidate($id);
+		if ($id !== null && $query_condition === null) {
+			self::getOne($id);
+			$query_condition = 'id = '.$id;
+		} 
+		elseif ($id !== null && $query_condition !== null) {
+			$query_condition .= ' AND id = '.$id;
+		}
+
         $query_string = 'UPDATE '.static::$table_name.' SET ';
 
-	    $data = self::filter($put, $query_string, $id);
+	    $data = self::filter($put, $query_string, $query_condition);
 	    return $data;
     }
 
@@ -139,29 +154,6 @@ abstract class AbstractModel {
 			$data = Database::getConnect()->query($query_string.$query_filters, $query_values);
 			return $data;
 		}
-	}
-
-	public static function userAuthentification($email, $password)
-	{
-		$query_string = 'SELECT * FROM '.static::$table_name.' WHERE email = ';
-		$data = Database::getConnect()->query($query_string."$1", (array)$email);
-
-		if (!isset($data) ?? $data[0]['password'] !== md5($password)) {
-			throw new Exception ("Некорректный логин или пароль");
-		}
-		
-		$data_gen = [];
-		$data_gen['key'] =  md5(bin2hex(random_bytes(5)));
-		$data_gen['key_timestamp'] = date('Y-m-d H:i:s', time());
-		
-
-		// Пока что циклом. Как только мы дойдём до использования метода filter, если в нём не будет изменений, то я перепишу кусок ниже под использование этого метода вместо цикла с запросом.
-		foreach ($data_gen as $key => $value) {
-			$query_string = 'UPDATE '.static::$table_name.' SET '.$key. ' = '."'".$value."'".' WHERE email = ';
-			Database::getConnect()->query($query_string."$1", (array)$data[0]['email']);
-		}
-
-		return $data_gen['key'];
 	}
 	
 }

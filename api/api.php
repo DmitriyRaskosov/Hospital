@@ -43,10 +43,14 @@ class Api {
         $headers = apache_request_headers();
 
         if (self::$instance->request_method == 'GET') {
-            print_r($headers);
             $authorization_result = $controller->userAuthorization($headers['Authorization']);
             echo json_encode($authorization_result);
-            $authentification_result = $controller->userAuthentification($get['email'], $get['password']);
+            return true;
+        }
+
+        elseif (self::$instance->request_method == 'POST') {
+            $post = self::json_decoder($post['filter']);
+            $authentification_result = $controller->userAuthentification($post);
             echo json_encode($authentification_result);
             return true;
         }

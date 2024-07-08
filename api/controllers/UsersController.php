@@ -6,8 +6,14 @@ class UsersController extends AbstractController {
 
 	public static $model_name = 'Users';
 
-	public static function userAuthorization($key)
+	public function userAuthentification($post)
+    {
+        return static::$model_name::userAuthentification($post);
+    }
+
+    public function userAuthorization($header_keys)
 	{
+		parent::authCheck($header_keys);
 		$query_string = 'SELECT * FROM '.static::$model_name.' WHERE key = ';
 		$data = Database::getConnect()->query($query_string."$1", (array)$key);
 

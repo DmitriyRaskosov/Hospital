@@ -38,9 +38,12 @@ abstract class AbstractController {
         return $model_name::delete($id);
     }
 
-    public function userAuthentification($email, $password)
+    // метод проверки авторизации
+    public static function authCheck($headers)
     {
-        $model_name = static::$model_name;
-        return $model_name::userAuthentification($email, $password);
+        if (!array_key_exists('Authorization', $headers)) {
+            throw new exception ('Хеш-ключ для авторизации отсутствует');
+        }
+        return true;
     }
 }
