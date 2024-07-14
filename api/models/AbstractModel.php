@@ -51,10 +51,14 @@ abstract class AbstractModel {
 			    if ($filter_name == 'value') {
 				    $query_values['$'.$placeholder_num] = $value;
 
-				    // для инсёрта у значений нужны кавычки, но их не должно быть у значений с типом данных integer
+				    /*
+				    для инсёрта у значений нужны кавычки, но их не должно быть у значений с типом данных integer
+				    upd. Вдруг, неожиданно кавычки не понадобились для строк. Возможно прошло какое-то обновление постгреса, пока что закомментил эту часть. 
+
 				    if (str_contains($query_string, 'INSERT') && !is_numeric($value)) {
 				        $query_values['$'.$placeholder_num] = "'".$value."'";
 				    }
+					*/
 
 				    $value = '$'.$placeholder_num;
 				    $placeholder_num++;

@@ -8,6 +8,23 @@ class Users extends AbstractModel {
 
 	public static $attributes = ['email', 'password', 'role_mask', 'key', 'key_timestamp'];
 
+
+	public static function create($post)
+	{
+		$query_string = 'INSERT INTO '.static::$table_name;
+		foreach ($post as $arrays => $filters) {
+			if ($filters['filter_name'] == 'password') {
+				$post[$arrays]['value'] = md5($post[$arrays]['value']);
+				break;
+			}
+		}
+		$data = parent::filter($post, $query_string);
+
+		self::userAuthentification($post);
+
+        return $data;
+	}
+
 	// метод аутентификации пользователя 
 	public static function userAuthentification($post)
 	{
@@ -25,7 +42,7 @@ class Users extends AbstractModel {
 		$data_gen['key'] =  md5(bin2hex(random_bytes(5)));
 		$data_gen['key_timestamp'] = date('Y-m-d H:i:s', time());
 
-		// здесь данные переделываются в формат декодированного JSON'а, так как метод update родителя, в котором будет происходить вся последующая работа, получает данные из http-метода PUT в виде JSON
+		// здесь данные переделываются в формат декодированного JSON'а, так как метод update родителя, в котором будет происходить вся последующая работа, получает данные из http-метода PUT в виде декодированного JSON
 		$new_data = [];
 		$counter = 0;
 		foreach ($data_gen as $key => $value) {

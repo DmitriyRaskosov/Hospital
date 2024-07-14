@@ -45,22 +45,19 @@ class Api {
         $put = file_get_contents("php://input");
         $headers = apache_request_headers();
 
-        /*
-        if (self::$instance->request_method == 'GET') {
-            $authorization_result = $controller->userAuthorization($headers);
-            echo json_encode($authorization_result);
-            return true;
-        }
-        */
-
-        // аутентификация пользователя - выдача хеш-ключа
-        if (isset(self::$instance->auth)) {
+        
+        // аутентификация пользователя - проверка хеш-ключа
+        if (self::$instance->ctrl_request == 'users' && isset(self::$instance->auth)) {
             $auth_data = self::json_decoder($post['auth']);
-            $new_auth_key = UsersController::userAuthentification($auth_data);
-            $headers['Authorization'] = $new_auth_key;
-            echo $headers['Authorization'];
+            
+            if (UsersController::userAuthorization($auth_data) == false) {
+                $new_auth_key = UsersController::userAuthentification($auth_data);
+                $headers['Authorization'] = $new_auth_key;
+                echo $headers['Authorization'];
+            }
+            
         }
-
+        
         if (self::$instance->request_method == 'GET') {
             // команда контроллеру на вызов метода getAll, если $id = null
             if (isset($get['id']) AND $get['id'] != null) {
@@ -79,8 +76,10 @@ class Api {
         }
         // команда контроллеру на вызов метода create
         elseif (self::$instance->request_method == 'POST') {
-            $post = self::json_decoder($post['filter']);
-            $result = $controller->create($post);
+
+            $create_data = self::json_decoder($post['filter']);
+            $result = $controller->create($create_data);
+
             echo json_encode($result);
             return true;
         }
