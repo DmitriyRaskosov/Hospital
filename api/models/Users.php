@@ -19,7 +19,6 @@ class Users extends AbstractModel {
 				break;
 			}
 		}
-		echo $query_condition;
 
 		// тут происходит генерация нового хеш-ключа и указывается дата и время генерации, результаты помещаются в массив $data_gen с соответствующими ключами;
 		$data_gen = [];

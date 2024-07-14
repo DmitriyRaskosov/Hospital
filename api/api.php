@@ -14,6 +14,9 @@ class Api {
     {
         $this->request_method = $method;
         $this->ctrl_request = $request_uri[3];
+        if (isset($request_uri[4]) && $request_uri[4] == 'auth') {
+            $this->auth = $request_uri[4];
+        }
     }
 
     // попытка в singleton
@@ -42,20 +45,22 @@ class Api {
         $put = file_get_contents("php://input");
         $headers = apache_request_headers();
 
+        /*
         if (self::$instance->request_method == 'GET') {
-            $authorization_result = $controller->userAuthorization($headers['Authorization']);
+            $authorization_result = $controller->userAuthorization($headers);
             echo json_encode($authorization_result);
             return true;
         }
+        */
 
-        elseif (self::$instance->request_method == 'POST') {
-            $post = self::json_decoder($post['filter']);
-            $authentification_result = $controller->userAuthentification($post);
-            echo json_encode($authentification_result);
-            return true;
+        // аутентификация пользователя - выдача хеш-ключа
+        if (isset(self::$instance->auth)) {
+            $auth_data = self::json_decoder($post['auth']);
+            $new_auth_key = UsersController::userAuthentification($auth_data);
+            $headers['Authorization'] = $new_auth_key;
+            echo $headers['Authorization'];
         }
 
-        /*
         if (self::$instance->request_method == 'GET') {
             // команда контроллеру на вызов метода getAll, если $id = null
             if (isset($get['id']) AND $get['id'] != null) {
@@ -101,7 +106,7 @@ class Api {
         else {
             // Обработка ошибки "неизвестный https-метод"
         }
-        */
+        
         //return false;
     }
 }

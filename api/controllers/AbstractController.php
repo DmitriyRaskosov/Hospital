@@ -38,12 +38,4 @@ abstract class AbstractController {
         return $model_name::delete($id);
     }
 
-    // метод проверки авторизации
-    public static function authCheck($headers)
-    {
-        if (!array_key_exists('Authorization', $headers)) {
-            throw new exception ('Хеш-ключ для авторизации отсутствует');
-        }
-        return true;
-    }
 }
