@@ -2,16 +2,23 @@
 
 class YandexIntegration {
 
-	private static $apikey = 'fb2bf220-834f-47c9-91ff-06cdfe45250d';
+	public static function getPass()
+	{
+		$string = file_get_contents(__DIR__.'/config.env');
+		$pass = ltrim(substr($string, strpos($string, '=')+1));
+
+		return $pass;
+	}
 
 	// curl
 	public static function getCoordinates($get)
 	{
 		$get = [
-			'apikey' => self::$apikey,
+			'apikey' => self::getPass(),
 			'geocode' => $get['geocode'],
 			'format' => 'json',
 		];
+
 		
 		$curl_handle = curl_init('https://geocode-maps.yandex.ru/1.x/?'.http_build_query($get));
 		curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, true);
