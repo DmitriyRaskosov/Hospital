@@ -4,7 +4,7 @@ class YandexIntegration {
 
 	public static function getPass()
 	{
-		$string = file_get_contents(__DIR__.'/config.env');
+		$string = file_get_contents(__DIR__.'/../configurations/config.env');
 		$pass = ltrim(substr($string, strpos($string, '=')+1));
 
 		return $pass;
