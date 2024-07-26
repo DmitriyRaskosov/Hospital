@@ -1,34 +1,28 @@
 <?php
 
+require_once __DIR__.'/ReadConfigTrait.php';
+//require_once 'C:/OpenServer/vendor/autoload.php';
+
 class YandexIntegration {
 
-	public static function getPass()
-	{
-		$string = file_get_contents(__DIR__.'/../configurations/config.env');
-		$pass = ltrim(substr($string, strpos($string, '=')+1));
+	use ReadConfig;
+	//use GuzzleHttp\Client;
+/*
+	protected function __construct()
+    {
+        $this->client = new GuzzleHttp\Client(['base_uri' => 'https://geocode-maps.yandex.ru/1.x/']);
+        $this->responce = self::$client->request('GET', self::getUri());
+        $this->decoded_responce = (array)json_decode(self::$responce, true);
+        $this->coordinates = self::$decoded_responce['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos'];
+    }
 
-		return $pass;
-	}
-
-	// curl
-	public static function getCoordinates($get)
-	{
-		$get = [
-			'apikey' => self::getPass(),
-			'geocode' => $get['geocode'],
-			'format' => 'json',
-		];
-
-		
-		$curl_handle = curl_init('https://geocode-maps.yandex.ru/1.x/?'.http_build_query($get));
-		curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, true);
-		$json = curl_exec($curl_handle);
-		curl_close($curl_handle);
-
-		$decoded_json = (array)json_decode($json, true);
-		$coordinates = $decoded_json['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos'];
-		return $coordinates;
-		
-	}
-
+    public static function getCoordinates()
+    {
+    	return self::$client->coordinates;
+    }
+*/
 }
+
+$test = new YandexIntegration();
+
+var_dump($test);
