@@ -1,13 +1,26 @@
 <?php
 
+/**
+ * Require the Database.php file.
+ * Require the ValidationTrait.php file.
+ */
 require_once __DIR__.'/../../Database.php';
 require_once __DIR__.'/../../ValidationTrait.php';
 
 abstract class AbstractModel {
 	use Validation;
 
+    /**
+     * @var null integer
+     */
 	public $id = null;
 
+    /**
+     * Небольшая валидация полученных атрибутов на их фактическое существование у модели
+     * @param string $value полученный атрибут
+     * @return true
+     * @throws Exception
+     */
 	public static function validation ($value)
 	{
 		if (!in_array($value, static::$attributes)) {
@@ -16,6 +29,13 @@ abstract class AbstractModel {
 		return true;
 	}
 
+    /**
+     * @param string $valid_data
+     * @param string $query_string
+     * @param $query_condition
+     * @return array|void
+     * @throws Exception
+     */
 	public static function filter($valid_data, $query_string, $query_condition = null)
     {
         $query_filters = [];
@@ -95,6 +115,14 @@ abstract class AbstractModel {
         }
     }
 
+    /**
+     * Метод для получения одной конкретной сущности
+     * @param integer $id поиск данных будет осуществляться по этому атрибуту
+     * @return array результат запроса
+     * @throws exception если провалена валидация, если был некорректный запрос
+     * @var string $query_filters - т.н. "фильтр" с плейсхолдером для pg_prepare()
+     * @var string $query_values - реальное значение т.н. "фильтра" для pg_execute()
+     */
 	public static function getOne($id)
 	{
 		self::intValidate($id);
@@ -103,7 +131,13 @@ abstract class AbstractModel {
 	    $data = Database::getConnect()->query('SELECT * FROM '.static::$table_name.' WHERE '.$query_filters, $query_values);
 	    return $data;
 	}
-	
+
+    /**
+     * Метод для получения более одной сущности
+     * @param $get
+     * @return array|null
+     * @throws Exception
+     */
 	public static function getAll($get)
 	{
 		if ($get == null) {
