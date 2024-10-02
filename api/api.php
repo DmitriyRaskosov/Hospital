@@ -13,7 +13,7 @@ use Swagger\Annotations as SWG;
  * Точка входа
  */
 class Api {
-    /**
+    /*
      * Трейт, который давно не актуален и не используется. Раньше что-то переводил.
      * Находится здесь исключительно чтобы я не забывал о существовании трейтов.
      */
@@ -28,9 +28,6 @@ class Api {
      * Запрос пользователя в виде массива, из которого можно будет понять, что именно пользователь хочет сделать
      * @param string $method название http-метода, берётся из $_SERVER
      * @param array $request_uri данные из $_SERVER['REQUEST_URI'], разбитые на массив для простоты работы
-     * $instance->request_method присваивается название http-метода
-     * $instance->ctrl_request присваивается название контроллера модели
-     * $instance->auth присваивается некоторое значение для последующей аутентификации, если она необходима
      */
     protected function __construct($method, $request_uri)
     {
@@ -45,7 +42,7 @@ class Api {
      * Попытка в Singleton
      * @param array $uri_in_array данные из $_SERVER['REQUEST_URI'], разбитые на массив для простоты работы
      * @return object|self возвращает результат создания экземпляра класса в виде созданного экземпляра с данными
-     * Возможно переделаю на return true, возвращал данные таким образом для контроля за результатом работы кода
+     * todo Возможно переделаю на return true, возвращал данные таким образом для контроля за результатом работы кода
      */
     public static function getInstance($uri_in_array) {
         if (self::$instance === null) {
@@ -91,7 +88,7 @@ class Api {
         $controller_name = self::$instance->ctrl_request.'Controller';
         $controller = new $controller_name;
 
-        /**
+        /*
          * Переменные с разными данными из разных http-методов и переменная с заголовками
          */
         $get = $_GET;
@@ -101,7 +98,7 @@ class Api {
         
         if (self::$instance->request_method == 'GET') {
 
-            /**
+            /*
              * Небольшая вставка процесса обучения работе со сторонними API
              */
             if ($controller_name == 'deliveryController') {
@@ -110,7 +107,7 @@ class Api {
                 return true;
             }
 
-            /**
+            /*
              * Команда контроллеру на вызов метода getOne модели, если $id != null
              * Если есть какие-то данные кроме id ($get['filter']), то вызывается метод getAll модели
              */
@@ -128,14 +125,13 @@ class Api {
             return true;
         }
 
-        /**
+        /*
          * Вызов контроллером метода create модели
          */
         elseif (self::$instance->request_method == 'POST') {
 
-            /**
+            /*
              * Для юзеров есть отдельный блок аутентификации и авторизации в рамках обучения этой теме
-             *
              */
             if (self::$instance->ctrl_request == 'users' && isset(self::$instance->auth)) {
                 $auth_data = self::json_decoder($post['auth']);
@@ -156,7 +152,7 @@ class Api {
             return true;
         }
 
-        /**
+        /*
          * Вызов контроллером метода update модели с проверкой авторизации для сущности Users (временно выключена)
          */
         elseif (self::$instance->request_method == 'PUT') {
@@ -174,7 +170,7 @@ class Api {
             return true;
         }
 
-        /**
+        /*
          * Вызов контроллером метода delete модели
          */
         elseif (self::$instance->request_method == 'DELETE') {

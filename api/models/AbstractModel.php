@@ -7,6 +7,9 @@
 require_once __DIR__.'/../../Database.php';
 require_once __DIR__.'/../../ValidationTrait.php';
 
+/**
+ * Абстрактная модель.
+ */
 abstract class AbstractModel {
 	use Validation;
 
@@ -17,7 +20,7 @@ abstract class AbstractModel {
 
     /**
      * Небольшая валидация полученных атрибутов на их фактическое существование у модели
-     * @param string $value полученный атрибут
+     * @param string $value полученный для валидации атрибут
      * @return true
      * @throws Exception
      */
@@ -30,14 +33,17 @@ abstract class AbstractModel {
 	}
 
     /**
-     * @param string $valid_data
-     * @param string $query_string
-     * @param $query_condition
+     * @param string $valid_data Данные для последующей работы
+     * @param string $query_string Предсформированная строка запроса в БД.
+     * @param string $query_condition условие "<...> WHERE $query_condition <...>" для запроса UPDATE.
      * @return array|void
      * @throws Exception
      */
 	public static function filter($valid_data, $query_string, $query_condition = null)
     {
+        /*
+         * Массивы нужны для последующей корректной работы функций pg_prepare и pg_execute
+         */
         $query_filters = [];
         $query_values = [];
         $placeholder_num = 1;
@@ -49,7 +55,11 @@ abstract class AbstractModel {
 		        throw new Exception ('Проверь количество символов');
 		    }
 
-		    /* валидация логина (email), пароля (password) и $query_condition будет здесь ?
+		    /*
+		    Здесь старый кусок кода, который был оставлен уже не помню зачем.
+		    Когда разберусь зачем он был нужен, перепишу/удалю его.
+
+		    валидация логина (email), пароля (password) и $query_condition будет здесь ?
 		     
 			$query_string = 'SELECT * FROM '.static::$table_name.' WHERE email = ';
 			$data = Database::getConnect()->query($query_string."$1", (array)$post[0]['email']);
@@ -65,15 +75,21 @@ abstract class AbstractModel {
 		    $query_filters['дефолтный номер ключа' => 'имя_фильтра "пробел" знак "пробел" плейсхолдер'] 
 		    */
 
+            /*
+             * Здесь происходит формирование данных для корректной работы pg_prepare и pg_execute.
+             * Массив $query_values заполняется данными с плейсхолдерами в виде ключей.
+             * Массив $query_filters заполняется названиями данных в виде ключей и плейсхолдерами на месте значений.
+             */
         	$filter = null;
-		    // $query_values
+
 		    foreach ($filters as $filter_name => $value) {
 			    if ($filter_name == 'value') {
 				    $query_values['$'.$placeholder_num] = $value;
 
 				    /*
 				    для инсёрта у значений нужны кавычки, но их не должно быть у значений с типом данных integer
-				    upd. Вдруг, неожиданно кавычки не понадобились для строк. Возможно прошло какое-то обновление постгреса, пока что закомментил эту часть. 
+				    upd. Вдруг, неожиданно кавычки не понадобились для строк.
+				    Возможно прошло какое-то обновление постгреса, пока что закомментил эту часть.
 
 				    if (str_contains($query_string, 'INSERT') && !is_numeric($value)) {
 				        $query_values['$'.$placeholder_num] = "'".$value."'";
@@ -85,21 +101,30 @@ abstract class AbstractModel {
 				}
 			    $filter .= " ".$value;
 		    }
-		    // $query_filters
 		    $query_filters[] = $filter;
 		}
 
-		// в зависимости от оператора запроса, собираем и формируем данные для запроса, после чего делаем запрос и кладём результат в $data
+        /*
+         * В зависимости от оператора запроса, собираем и формируем данные для запроса.
+         * После этого делаем запрос и кладём результат запроса (данные) в $data.
+         */
 		if (str_contains($query_string, 'SELECT')) {
         	$query_filters = implode(' AND ', $query_filters);
         	$data = Database::getConnect()->query($query_string.$query_filters, $query_values);
 	        return $data;
         }
         if (str_contains($query_string, 'INSERT')) {
-        	// для инсёрта query_filters['дефолтный номер ключа' => 'имя_фильтра знак плейсхолдер'] переделываем в query_filters['имя_фильтра' => 'плейсхолдер'] из-за синтаксиса postgres
+            /*
+             * Для запроса INSERT есть особенность синтаксиса в postgres.
+             * query_filters['дефолтный номер ключа' => 'имя_фильтра знак плейсхолдер'] переделывается в
+             * query_filters['имя_фильтра' => 'плейсхолдер']
+             */
         	$insert_filters = [];
 			foreach ($query_filters as $key => $value) {
-				// по непонятной причине первый символ $value - пробел, потому начинаем с "1", а при использовании strpos пробел появляется в конце, "-1" его убирает
+                /*
+                 * По непонятной причине первый символ $value - пробел, потому начинаем с "1".
+                 * При использовании strpos() пробел появляется в конце, "-1" его убирает.
+                 */
 	        	$insert_filters[substr($value, 1, strpos($value, " ", 1)-1)] = substr($value, strrpos($value, " ", true));
 	        }
 
@@ -116,7 +141,7 @@ abstract class AbstractModel {
     }
 
     /**
-     * Метод для получения одной конкретной сущности
+     * Метод для получения одного блока данных
      * @param integer $id поиск данных будет осуществляться по этому атрибуту
      * @return array результат запроса
      * @throws exception если провалена валидация, если был некорректный запрос
@@ -133,8 +158,9 @@ abstract class AbstractModel {
 	}
 
     /**
-     * Метод для получения более одной сущности
-     * @param $get
+     * Метод для получения более одного блока данных.
+     * По текущей задумке, если нужны все данные БД, то присылается пустота в $get.
+     * @param array $get Данные, по которым будет происходить поиск.
      * @return array|null
      * @throws Exception
      */
@@ -151,6 +177,12 @@ abstract class AbstractModel {
 		return $data;
 	}
 
+    /**
+     * Метод создания чего-либо.
+     * @param array $post Новые данные
+     * @return array|null
+     * @throws Exception
+     */
 	public static function create($post)
 	{
 		$query_string = 'INSERT INTO '.static::$table_name;
@@ -159,6 +191,14 @@ abstract class AbstractModel {
         return $data;
 	}
 
+    /**
+     * Метод обновления данных какой-то сущности.
+     * @param array $put Данные для обновления.
+     * @param string $query_condition Часть строки запроса с условием: "<...> WHERE $query_condition <...>"
+     * @param integer $id id сущности, в которой будет обновление данных
+     * @return array|null
+     * @throws Exception
+     */
 	public static function update($put, $query_condition = null, $id = null)
 	{	
 		if ($id !== null && $query_condition === null) {
@@ -175,8 +215,17 @@ abstract class AbstractModel {
 	    return $data;
     }
 
+    /**
+     * Метод удаления сущности.
+     * @param integer $id id сущности, которую предстоит удалить.
+     * @return array|void
+     * @throws exception
+     */
 	public static function delete($id)
-	{	
+	{
+        /*
+         * Формирование массивов для корректной работы pg_prepare и pg_execute
+         */
 		self::intValidate($id);
 		$query_filters = '$1';
 		$query_values[] = $id;

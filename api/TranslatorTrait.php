@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Трейт для перевода.
+ * Существует в рамках обучения трейтам, в данный момент нигде не используется.
+ */
 trait Translator
 {
     public static function getTranslation($ru)
