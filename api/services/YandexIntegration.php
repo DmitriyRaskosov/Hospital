@@ -1,5 +1,6 @@
 <?php
-namespace services;
+namespace api\services;
+
 require_once __DIR__.'/ReadConfigTrait.php';
 
 /**
@@ -9,7 +10,7 @@ require_once __DIR__.'/ReadConfigTrait.php';
  */
 class YandexIntegration {
 
-	use ReadConfig;
+	use \ReadConfig;
 
 }
 

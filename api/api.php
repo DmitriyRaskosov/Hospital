@@ -1,5 +1,5 @@
 <?php
-namespace api;
+
 
 require_once 'controllers/UsersController.php';
 require_once 'controllers/DeliveryController.php';
@@ -96,14 +96,13 @@ class Api {
         $post = $_POST;
         $put = file_get_contents("php://input");
         $headers = apache_request_headers();
-        echo $controller_name;
         if (self::$instance->request_method == 'GET') {
-
             /*
              * Небольшая вставка процесса обучения работе со сторонними API
              */
-            if ($controller_name == 'deliveryController') {
-                $result = DeliveryController::getCoordinates($get);
+
+            if ($controller_name == 'api\controllers\deliveryController') {
+                $result = $controller_name::getCoordinates($get);
                 echo json_encode($result);
                 return true;
             }
