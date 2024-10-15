@@ -1,5 +1,5 @@
 <?php
-
+namespace api\controllers;
 require_once 'AbstractController.php';
 require_once __DIR__.'/../services/YandexIntegration.php';
 

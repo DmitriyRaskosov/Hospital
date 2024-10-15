@@ -1,4 +1,5 @@
 <?php
+namespace api\models;
 
 /**
  * Require the Database.php file.
@@ -11,7 +12,7 @@ require_once __DIR__.'/../../ValidationTrait.php';
  * Абстрактная модель.
  */
 abstract class AbstractModel {
-	use Validation;
+	use \Validation;
 
     /**
      * @var null integer

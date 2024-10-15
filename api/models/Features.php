@@ -1,5 +1,5 @@
 <?php
-
+namespace api\models;
 require_once __DIR__.'/AbstractModel.php';
 
 /**

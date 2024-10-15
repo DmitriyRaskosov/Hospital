@@ -1,10 +1,11 @@
 <?php
+namespace api\controllers;
 require_once __DIR__.'/../models/AbstractModel.php';
 require_once __DIR__.'/../../Database.php';
 require_once __DIR__.'/../../ValidationTrait.php';
 
 abstract class AbstractController {
-    use Validation;
+    use \Validation;
 
     /**
      * @var string $model_name наименование модели, присутствует в каждом контроллере
@@ -18,7 +19,7 @@ abstract class AbstractController {
      */
     public function getOne($id)
     {
-        $model_name = static::$model_name;
+        $model_name = 'api\models\\'.static::$model_name;
         return $model_name::getOne($id);
     }
 
@@ -29,7 +30,7 @@ abstract class AbstractController {
      */
     public function getAll($get)
     {
-        $model_name = static::$model_name;
+        $model_name = 'api\models\\'.static::$model_name;
         return $model_name::getAll($get);
     }
 

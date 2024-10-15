@@ -1,5 +1,5 @@
 <?php
-
+namespace api\controllers;
 require_once 'AbstractController.php';
 
 /*

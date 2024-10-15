@@ -1,4 +1,5 @@
 <?php
+namespace api;
 
 require_once 'controllers/UsersController.php';
 require_once 'controllers/DeliveryController.php';
@@ -17,7 +18,7 @@ class Api {
      * Трейт, который давно не актуален и не используется. Раньше что-то переводил.
      * Находится здесь исключительно чтобы я не забывал о существовании трейтов.
      */
-    use Translator;
+    use \Translator;
 
     /**
      * @var object $instance экземпляр класса
@@ -80,12 +81,12 @@ class Api {
      */
     public function requiredOutput()
     {
-        /**
+        /*
          * Здесь создаётся экземпляр нужного контроллера
          * @var string $controller_name наименование контроллера
          * @var object $controller экземпляр контроллера
          */
-        $controller_name = self::$instance->ctrl_request.'Controller';
+        $controller_name = "api\controllers\\".self::$instance->ctrl_request.'Controller';
         $controller = new $controller_name;
 
         /*
@@ -94,8 +95,8 @@ class Api {
         $get = $_GET;
         $post = $_POST;
         $put = file_get_contents("php://input");
-        $headers = apache_request_headers();    
-        
+        $headers = apache_request_headers();
+        echo $controller_name;
         if (self::$instance->request_method == 'GET') {
 
             /*

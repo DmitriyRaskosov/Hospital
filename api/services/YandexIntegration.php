@@ -1,5 +1,5 @@
 <?php
-
+namespace services;
 require_once __DIR__.'/ReadConfigTrait.php';
 
 /**
